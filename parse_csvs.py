@@ -20,6 +20,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from rag.catalog_meta import update_catalog_meta
+
 
 DATE_TYPES = {"DATE"}
 TIMESTAMP_TYPES = {"TIMESTAMP", "TIMESTAMPTZ"}
@@ -204,6 +206,10 @@ def main() -> None:
                 writer.writerow({key: row.get(key, "") for key in fields})
                 count += 1
         print(f"{table}: {count:,} rows")
+        # Row count and header are known for free right now; save them so the
+        # MCP catalog server can serve list_tables()/describe_table() without
+        # re-streaming the full CSV from object storage.
+        update_catalog_meta(output_dir, table, count, fields)
 
     # Food export is one row per violation.  Split stable location/business
     # identity, inspection visits, and violation facts into separate entities.
@@ -249,7 +255,12 @@ def main() -> None:
     for table, (fields, rows) in outputs.items():
         write_csv(output_dir / f"{table}.csv", fields, rows)
         print(f"{table}: {len(rows):,} rows")
+        update_catalog_meta(output_dir, table, len(rows), fields)
     print(f"Wrote {len(direct) + 3} derived CSVs to {output_dir}")
+    print(
+        f"Updated {output_dir / 'catalog_meta.json'} "
+        "(upload alongside the CSVs so mcp_server.py can skip full-file scans)"
+    )
 
 
 if __name__ == "__main__":
