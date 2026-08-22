@@ -1,6 +1,6 @@
 # Eval results — Boston Neighborhood Intelligence
 
-Generated: 2026-08-22 15:48 UTC
+Generated: 2026-08-22 17:17 UTC
 System module: `not wired — engine.ask() missing`
 Schema grounding flag (ours default run): `n/a — route not wired`
 

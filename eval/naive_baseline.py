@@ -104,7 +104,7 @@ def answer(question: str, context: str | None = None) -> dict:
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--questions", type=Path, default=QUESTIONS)
-    p.add_argument("--out", type=Path, default=ROOT / "results" / "naive_answers.json")
+    p.add_argument("--out", type=Path, default=ROOT / "eval-results" / "naive_answers.json")
     args = p.parse_args()
     qs = json.loads(args.questions.read_text())["questions"]
     ctx = _snippet_bank()

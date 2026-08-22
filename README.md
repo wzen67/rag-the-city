@@ -39,7 +39,7 @@ Import path: `src.qa`, `src.engine`, `engine`, or `app.engine`.
 - `mcp_server.py` exposes the derived table catalog through FastMCP.
 - `run_mcp.sh` starts the HTTP MCP server with Conda environment `nn`.
 - `eval/` is the Person C gold set, naive baseline, and harness.
-- `results/eval.md` is the committed eval table.
+- `eval-results/eval.md` is the committed eval table.
 
 ## Datasets (Analyze Boston)
 
@@ -83,7 +83,7 @@ host or port with `HOST` and `PORT`.
 
 ## Eval (Person C)
 
-Track A 4-anchor: *measurably better than naive RAG, and they can show the numbers.* This repo commits `results/eval.md`. An eval script with no output does not count.
+Track A 4-anchor: *measurably better than naive RAG, and they can show the numbers.* This repo commits `eval-results/eval.md`. An eval script with no output does not count.
 
 | Artifact | Path |
 | --- | --- |
@@ -91,7 +91,7 @@ Track A 4-anchor: *measurably better than naive RAG, and they can show the numbe
 | Recompute gold from CSVs | [`eval/fill_gold.py`](eval/fill_gold.py) |
 | Naive baseline (CSV head only — no SQL, no schema) | [`eval/naive_baseline.py`](eval/naive_baseline.py) |
 | Harness | [`eval/run_eval.py`](eval/run_eval.py) |
-| Committed numbers | [`results/eval.md`](results/eval.md) |
+| Committed numbers | [`eval-results/eval.md`](eval-results/eval.md) |
 
 Question set includes: counting items, 4 abstentions, value-judgment (“is it safe?”), the B2 offense-code trap (naive `count(*)` = 10,540 in 2024; ours excluding PRD non-crime descriptions = 7,957), and a UCR_PART schema-grounding trap (column is empty).
 
@@ -105,7 +105,7 @@ python eval/run_eval.py --no-schema-grounding   # SQL A/B once the engine is wir
 
 ### Eval table (latest harness run)
 
-See [`results/eval.md`](results/eval.md) for the live table. Snapshot after gold fill, **before** the router lands:
+See [`eval-results/eval.md`](eval-results/eval.md) for the live table. Snapshot after gold fill, **before** the router lands:
 
 | Metric | Naive baseline | Ours | Delta |
 | --- | --- | --- | --- |
@@ -141,6 +141,6 @@ Naive is *supposed* to fail counting: it never scans 100% of rows and it treats 
 | --- | --- |
 | A — Data & SQL | Crosswalk, DuckDB views, scorecard |
 | B — Retrieval & Router | Hybrid search, schema-grounded SQL, citations |
-| C — Eval & Docs | This README, `eval/`, `results/eval.md` |
+| C — Eval & Docs | This README, `eval/`, `eval-results/eval.md` |
 | D — Documents & Equity | Offense-code parse, equity ZIP join |
 | E — Surface & adversarial QA | CLI / optional Streamlit, off-script questions |

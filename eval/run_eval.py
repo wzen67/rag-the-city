@@ -27,8 +27,8 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "eval"))
 
 QUESTIONS = ROOT / "eval" / "questions.json"
-OUT_MD = ROOT / "results" / "eval.md"
-OUT_RAW = ROOT / "results" / "eval_raw.json"
+OUT_MD = ROOT / "eval-results" / "eval.md"
+OUT_RAW = ROOT / "eval-results" / "eval_raw.json"
 
 ABSTAIN_RE = re.compile(
     r"\b(does not (record|say|cover|include)|do not (record|know)|don't know|"
