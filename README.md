@@ -246,12 +246,24 @@ rag/                      the engine — see rag/README.md
   temporal.py               time-window extraction, corpus-anchored
   guardrails.py             input screen + output uncertainty
   llm.py                    Ollama client
+  geography.py              neighbourhood assignment helpers
+  offense.py                offense-code classification
+  catalog_meta.py           row-count/header sidecar for the MCP catalog
 
 sql/views.sql             cleaned views; every data trap handled inside
 sql/semantic_layer.json   tables, 11 rules, 10 worked question->SQL examples
 scripts/build_db.py       materialise the views into boston.db
 scripts/query.py          the only sanctioned way to touch data
 scripts/parse_docs.py     parse reference PDFs/XLSX -> data/reference/
+scripts/build_geography.py        } derived geography, offense dimension
+scripts/build_crime_geography.py  } and district-purity tables; each one
+scripts/build_district_purity.py  } updates data/derived/catalog_meta.json
+scripts/build_offense_dim.py      }
+scripts/build_semantic_layer.py   regenerate sql/semantic_layer.json
+scripts/impute_311_zip_knn.py     fill missing 311 ZIPs (KNN, validated)
+scripts/build_index.py            embed reference chunks into Chroma
+scripts/smoke_engine.py           one question per route, pre-demo check
+schema.sql  parse_csvs.py         source-export normalisation
 eval/                     gold set, naive baseline, harness
 data/                     nine gzipped source extracts + reference docs
 tests/                    179 tests

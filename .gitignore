@@ -16,3 +16,8 @@ data/*.json
 
 .DS_Store
 .cursor/
+
+# working docs and editor config — kept locally, not part of the submission
+PRD.md
+PRD.pdf
+.codex/
