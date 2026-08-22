@@ -5,163 +5,172 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Boston Neighborhood Intelligence</title>
 <style>
-/* Palette: validated default instance. Status colours are fixed and never
-   themed; they always ship with an icon + text label, never colour alone
-   (warning is sub-3:1 on the light surface, so the label is the relief). */
+/* Palette: the validated default instance. Status colours are fixed, never
+   themed, and always ship with an icon + a word — never colour alone, since
+   warning is sub-3:1 on the light surface. */
 :root {
   color-scheme: light;
-  --surface:   #fcfcfb;
-  --page:      #f9f9f7;
-  --ink-1:     #0b0b0b;
-  --ink-2:     #52514e;
-  --ink-muted: #898781;
-  --grid:      #e1e0d9;
-  --baseline:  #c3c2b7;
-  --border:    rgba(11,11,11,0.10);
-  --accent:    #2a78d6;
-  --accent-dim:#cde2fb;
-  --good:      #0ca30c;
-  --warning:   #fab219;
-  --critical:  #d03b3b;
-  --radius: 10px;
-  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --surface:#fcfcfb; --page:#f9f9f7;
+  --ink-1:#0b0b0b; --ink-2:#52514e; --ink-muted:#898781;
+  --grid:#e1e0d9; --baseline:#c3c2b7; --border:rgba(11,11,11,0.10);
+  --accent:#2a78d6; --accent-soft:#cde2fb;
+  --good:#0ca30c; --warning:#fab219; --critical:#d03b3b;
+  --r:10px; --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --shadow: 0 1px 2px rgba(11,11,11,.04), 0 4px 12px rgba(11,11,11,.04);
 }
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
-    --surface: #1a1a19; --page: #0d0d0d;
-    --ink-1: #ffffff; --ink-2: #c3c2b7; --ink-muted: #898781;
-    --grid: #2c2c2a; --baseline: #383835;
-    --border: rgba(255,255,255,0.10);
-    --accent: #3987e5; --accent-dim: #184f95;
+    --surface:#1a1a19; --page:#0d0d0d; --ink-1:#fff; --ink-2:#c3c2b7;
+    --grid:#2c2c2a; --baseline:#383835; --border:rgba(255,255,255,0.10);
+    --accent:#3987e5; --accent-soft:#184f95;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.3);
   }
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --surface: #1a1a19; --page: #0d0d0d;
-  --ink-1: #ffffff; --ink-2: #c3c2b7; --ink-muted: #898781;
-  --grid: #2c2c2a; --baseline: #383835;
-  --border: rgba(255,255,255,0.10);
-  --accent: #3987e5; --accent-dim: #184f95;
+  --surface:#1a1a19; --page:#0d0d0d; --ink-1:#fff; --ink-2:#c3c2b7;
+  --grid:#2c2c2a; --baseline:#383835; --border:rgba(255,255,255,0.10);
+  --accent:#3987e5; --accent-soft:#184f95;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.3);
 }
 
-* { box-sizing: border-box; }
-body {
-  margin: 0; background: var(--page); color: var(--ink-1);
-  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-.wrap { max-width: 1080px; margin: 0 auto; padding: 28px 20px 80px; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--page); color:var(--ink-1);
+       font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
+.wrap { max-width:1120px; margin:0 auto; padding:26px 20px 90px; }
+:focus-visible { outline:2px solid var(--accent); outline-offset:2px; border-radius:6px; }
 
-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 6px; }
-h1 { font-size: 25px; margin: 0 0 4px; letter-spacing: -0.01em; }
-.sub { color: var(--ink-2); margin: 0; max-width: 70ch; }
-.spacer { flex: 1; }
-button.ghost {
-  background: transparent; border: 1px solid var(--border); color: var(--ink-2);
-  border-radius: 8px; padding: 6px 10px; cursor: pointer; font: inherit; font-size: 13px;
-}
-button.ghost:hover { background: var(--surface); }
+header { display:flex; align-items:flex-start; gap:16px; }
+.brand { display:flex; align-items:center; gap:10px; margin-bottom:5px; }
+.mark { width:26px; height:26px; border-radius:7px; background:var(--accent); flex:none;
+        display:grid; place-items:center; color:#fff; font-weight:700; font-size:13px; }
+h1 { font-size:24px; margin:0; letter-spacing:-.015em; }
+.sub { color:var(--ink-2); margin:0; max-width:74ch; }
+.spacer { flex:1; }
+button.ghost { background:transparent; border:1px solid var(--border); color:var(--ink-2);
+  border-radius:8px; padding:7px 11px; cursor:pointer; font:inherit; font-size:13px; }
+button.ghost:hover { background:var(--surface); color:var(--ink-1); }
 
-.thesis {
-  margin: 18px 0 22px; padding: 12px 14px; background: var(--surface);
-  border: 1px solid var(--border); border-left: 3px solid var(--accent);
-  border-radius: var(--radius); color: var(--ink-2); font-size: 14px;
-}
-.thesis b { color: var(--ink-1); }
+.thesis { margin:18px 0 20px; padding:13px 15px; background:var(--surface);
+  border:1px solid var(--border); border-left:3px solid var(--accent);
+  border-radius:var(--r); color:var(--ink-2); font-size:14px; }
+.thesis b { color:var(--ink-1); }
 
-/* Stat tiles: a hero number is the right form for a single figure — no chart. */
-.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 26px; }
-.tile { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; }
-.tile .v { font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
-.tile .k { font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
+.tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:10px; }
+.tile { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:12px 14px; }
+.tile .v { font-size:21px; font-weight:650; letter-spacing:-.02em; }
+.tile .k { font-size:12px; color:var(--ink-muted); margin-top:2px; }
 
-h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em;
-     color: var(--ink-muted); margin: 30px 0 10px; font-weight: 600; }
+h2 { font-size:12px; text-transform:uppercase; letter-spacing:.07em;
+     color:var(--ink-muted); margin:30px 0 11px; font-weight:600; }
 
-.personas { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-.ptab {
-  border: 1px solid var(--border); background: var(--surface); color: var(--ink-2);
-  border-radius: 999px; padding: 6px 13px; cursor: pointer; font: inherit; font-size: 13px;
-}
-.ptab[aria-selected="true"] { border-color: var(--accent); color: var(--ink-1); box-shadow: inset 0 0 0 1px var(--accent); }
-.chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-.chip {
-  border: 1px solid var(--border); background: var(--surface); color: var(--ink-2);
-  border-radius: 8px; padding: 7px 11px; cursor: pointer; font: inherit; font-size: 13px; text-align: left;
-}
-.chip:hover { border-color: var(--accent); color: var(--ink-1); }
-.chip .tag { display: block; font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+/* ---- persona cards: choosing a role, not a tab ---- */
+.personas { display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:11px; }
+.persona { position:relative; text-align:left; cursor:pointer; font:inherit;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:14px 15px 13px; transition:border-color .12s, box-shadow .12s, transform .12s; }
+.persona:hover { border-color:var(--baseline); transform:translateY(-1px); box-shadow:var(--shadow); }
+.persona[aria-pressed="true"] { border-color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); }
+.persona .top { display:flex; align-items:center; gap:9px; margin-bottom:7px; }
+.persona .ico { width:30px; height:30px; border-radius:8px; flex:none; display:grid; place-items:center;
+  background:var(--accent-soft); color:var(--accent); font-size:15px; }
+.persona[aria-pressed="true"] .ico { background:var(--accent); color:#fff; }
+.persona .nm { font-weight:640; font-size:14.5px; }
+.persona .who { color:var(--ink-2); font-size:13px; font-style:italic; }
+.persona .cnt { position:absolute; top:13px; right:14px; font-size:11px; color:var(--ink-muted); }
 
-form.askbar { display: flex; gap: 8px; margin-bottom: 8px; }
-input[type=text] {
-  flex: 1; padding: 11px 13px; border-radius: var(--radius);
-  border: 1px solid var(--border); background: var(--surface); color: var(--ink-1); font: inherit;
-}
-input[type=text]:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
-button.go {
-  background: var(--accent); color: #fff; border: 0; border-radius: var(--radius);
-  padding: 11px 20px; font: inherit; font-weight: 600; cursor: pointer;
-}
-button.go[disabled] { opacity: 0.55; cursor: default; }
+.chips { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:9px; margin:12px 0 18px; }
+.chip { border:1px solid var(--border); background:var(--surface); color:var(--ink-1);
+  border-radius:9px; padding:10px 12px; cursor:pointer; font:inherit; font-size:13.5px; text-align:left;
+  display:flex; gap:9px; align-items:flex-start; transition:border-color .12s, transform .12s; }
+.chip:hover { border-color:var(--accent); transform:translateY(-1px); }
+.chip .q { flex:1; }
+.chip .tag { display:block; font-size:11.5px; color:var(--ink-muted); margin-top:3px; }
+.chip .arrow { color:var(--ink-muted); font-size:12px; margin-top:2px; }
 
-.grid { display: grid; grid-template-columns: 300px 1fr; gap: 16px; align-items: start; }
-@media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+form.askbar { display:flex; gap:9px; }
+.field { flex:1; display:flex; }
+input[type=text] { flex:1; padding:12px 14px; border-radius:var(--r);
+  border:1px solid var(--border); background:var(--surface); color:var(--ink-1); font:inherit; }
+button.go { background:var(--accent); color:#fff; border:0; border-radius:var(--r);
+  padding:12px 22px; font:inherit; font-weight:600; cursor:pointer; min-width:112px; }
+button.go[disabled] { opacity:.6; cursor:default; }
+.hint { color:var(--ink-muted); font-size:12.5px; margin:8px 0 0; }
 
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
-.card h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
-           color: var(--ink-muted); margin: 0 0 10px; font-weight: 600; }
+.grid { display:grid; grid-template-columns:330px 1fr; gap:15px; align-items:start; margin-top:16px; }
+@media (max-width:860px){ .grid{ grid-template-columns:1fr; } }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+        padding:15px 16px; position:relative; overflow:hidden; }
+.card h3 { font-size:11.5px; text-transform:uppercase; letter-spacing:.07em;
+  color:var(--ink-muted); margin:0 0 11px; font-weight:600; }
+.card h3 .st { text-transform:none; letter-spacing:0; font-weight:500; }
 
-/* Pipeline trace: an ordered sequence, not a chart. */
-ol.trace { list-style: none; margin: 0; padding: 0; }
-ol.trace li { display: grid; grid-template-columns: 20px 1fr; gap: 9px; padding: 7px 0; border-top: 1px solid var(--grid); }
-ol.trace li:first-child { border-top: 0; }
-.dot { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center;
-       font-size: 11px; font-weight: 700; background: var(--accent-dim); color: var(--accent); }
-.trace .nm { font-size: 12px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.trace .dt { font-size: 13px; word-break: break-word; }
-.trace li.pending .dot { background: transparent; border: 1px dashed var(--baseline); color: var(--ink-muted); }
+/* Indeterminate bar: honest about "working", claims nothing about how far. */
+.loadbar { position:absolute; top:0; left:0; right:0; height:2px; overflow:hidden; }
+.loadbar i { display:block; height:2px; width:38%; background:var(--accent);
+  animation:slide 1.15s ease-in-out infinite; }
+@keyframes slide { 0%{transform:translateX(-100%)} 100%{transform:translateX(320%)} }
 
-.badges { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 12px; }
-.badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600;
-         border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; color: var(--ink-1); }
-.badge .ic { font-size: 11px; }
-.badge.route { border-color: var(--accent); color: var(--accent); }
-.badge.good     { border-color: var(--good);     color: var(--good); }
-.badge.warning  { border-color: var(--warning);  color: var(--ink-1); background: color-mix(in oklab, var(--warning) 16%, transparent); }
-.badge.critical { border-color: var(--critical); color: var(--critical); }
+ol.trace { list-style:none; margin:0; padding:0; }
+ol.trace li { display:grid; grid-template-columns:22px 1fr; gap:10px; padding:8px 0;
+  border-top:1px solid var(--grid); }
+ol.trace li:first-child { border-top:0; }
+.dot { width:22px; height:22px; border-radius:50%; display:grid; place-items:center;
+  font-size:11px; font-weight:700; background:var(--accent-soft); color:var(--accent); flex:none; }
+li.done .dot { background:var(--accent); color:#fff; }
+li.active .dot { background:transparent; border:2px solid var(--accent-soft);
+  border-top-color:var(--accent); animation:spin .8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+li.wait .dot { background:transparent; border:1px dashed var(--baseline); color:var(--ink-muted); }
+.trace .nm { font-size:11.5px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.05em; }
+.trace .dt { font-size:13px; word-break:break-word; }
+li.wait .dt { color:var(--ink-muted); }
+.timer { font-variant-numeric:tabular-nums; color:var(--accent); font-weight:600; font-size:12.5px; margin-top:2px; }
 
-.answer { font-size: 15px; white-space: pre-wrap; margin: 0 0 14px; }
-.hero { font-size: 38px; font-weight: 680; letter-spacing: -0.03em; line-height: 1.1; margin: 2px 0 6px; }
-.hero-k { color: var(--ink-muted); font-size: 13px; margin-bottom: 14px; }
+.badges { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:13px; }
+.badge { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600;
+  border:1px solid var(--border); border-radius:999px; padding:3px 10px; color:var(--ink-1); }
+.badge.route { border-color:var(--accent); color:var(--accent); }
+.badge.good { border-color:var(--good); color:var(--good); }
+.badge.warning { border-color:var(--warning); background:color-mix(in oklab,var(--warning) 16%,transparent); }
+.badge.critical { border-color:var(--critical); color:var(--critical); }
 
-table.res { border-collapse: collapse; width: 100%; font-size: 13px; margin: 4px 0 14px; caption-side: bottom; }
-table.res caption { text-align: left; padding-top: 6px; }
-table.res th { text-align: left; font-weight: 600; color: var(--ink-muted); font-size: 12px;
-               padding: 5px 8px; border-bottom: 1px solid var(--baseline); }
-table.res td { padding: 5px 8px; border-bottom: 1px solid var(--grid); }
-table.res td.num { text-align: right; font-variant-numeric: tabular-nums; }
-/* Magnitude comparison: one series, so the column header names it and no
-   legend is needed. 4px rounded end, anchored to a zero baseline. */
-td.bar { width: 42%; padding-right: 12px; }
-.barwrap { background: transparent; height: 12px; display: block; }
-.barfill { height: 12px; background: var(--accent); border-radius: 0 4px 4px 0; display: block; min-width: 2px; }
+.answer { font-size:15px; white-space:pre-wrap; margin:0 0 14px; }
+.hero { font-size:40px; font-weight:680; letter-spacing:-.03em; line-height:1.08; margin:2px 0 5px; }
+.hero-k { color:var(--ink-muted); font-size:13px; margin-bottom:14px; }
 
-pre.sql { margin: 0 0 12px; padding: 11px 12px; background: var(--page); border: 1px solid var(--border);
-          border-radius: 8px; font: 12.5px/1.5 var(--mono); overflow-x: auto; color: var(--ink-1); }
-ul.cites { margin: 0; padding: 0; list-style: none; font-size: 12.5px; color: var(--ink-2); }
-ul.cites li { padding: 4px 0; border-top: 1px solid var(--grid); font-family: var(--mono); }
-ul.cites li:first-child { border-top: 0; }
+table.res { border-collapse:collapse; width:100%; font-size:13px; margin:4px 0 14px; caption-side:bottom; }
+table.res caption { text-align:left; padding-top:7px; color:var(--ink-muted); font-size:12px; }
+table.res th { text-align:left; font-weight:600; color:var(--ink-muted); font-size:11.5px;
+  padding:6px 8px; border-bottom:1px solid var(--baseline); }
+table.res td { padding:6px 8px; border-bottom:1px solid var(--grid); }
+table.res tbody tr:hover { background:var(--page); }
+table.res td.num { text-align:right; font-variant-numeric:tabular-nums; }
+/* One series, so the column header names it and no legend is needed.
+   Anchored to a zero baseline; 4px rounded data end. */
+td.bar { width:38%; padding-right:12px; }
+.barfill { height:12px; background:var(--accent); border-radius:0 4px 4px 0; display:block; min-width:2px; }
 
-.muted { color: var(--ink-muted); font-size: 13px; }
-.err { color: var(--critical); }
-.stack { display: grid; gap: 12px; }
+details.more { margin:0 0 12px; }
+details.more summary { cursor:pointer; font-size:11.5px; color:var(--ink-muted);
+  text-transform:uppercase; letter-spacing:.06em; font-weight:600; }
+pre.sql { margin:9px 0 0; padding:11px 12px; background:var(--page); border:1px solid var(--border);
+  border-radius:8px; font:12.5px/1.5 var(--mono); overflow-x:auto; }
+ul.cites { margin:9px 0 0; padding:0; list-style:none; font-size:12.5px; color:var(--ink-2); }
+ul.cites li { padding:5px 0; border-top:1px solid var(--grid); font-family:var(--mono); }
+ul.cites li:first-child { border-top:0; }
 
-.tech { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 10px; }
-.tech .card h3 { color: var(--accent); }
-.tech ul { margin: 0; padding-left: 17px; font-size: 13px; color: var(--ink-2); }
-.tech li { margin: 3px 0; }
-code { font-family: var(--mono); font-size: 0.92em; }
-footer { margin-top: 34px; color: var(--ink-muted); font-size: 12.5px; border-top: 1px solid var(--grid); padding-top: 12px; }
+.muted { color:var(--ink-muted); font-size:13px; }
+.err { color:var(--critical); }
+.tech { display:grid; grid-template-columns:repeat(auto-fit,minmax(238px,1fr)); gap:10px; }
+.tech .card h3 { color:var(--accent); }
+.tech ul { margin:0; padding-left:17px; font-size:13px; color:var(--ink-2); }
+.tech li { margin:3px 0; }
+code { font-family:var(--mono); font-size:.92em; }
+footer { margin-top:34px; color:var(--ink-muted); font-size:12.5px;
+         border-top:1px solid var(--grid); padding-top:13px; }
+@media (prefers-reduced-motion: reduce) { * { animation:none !important; transition:none !important; } }
 </style>
 </head>
 <body>
@@ -169,41 +178,43 @@ footer { margin-top: 34px; color: var(--ink-muted); font-size: 12.5px; border-to
 
 <header>
   <div>
-    <h1>Boston Neighborhood Intelligence</h1>
+    <div class="brand"><span class="mark">B</span><h1>Boston Neighborhood Intelligence</h1></div>
     <p class="sub">Ask about safety, city responsiveness, food safety, parks and housing across
       Boston's 26 neighbourhoods — and get an answer that shows its work, or declines honestly.</p>
   </div>
   <div class="spacer"></div>
-  <button class="ghost" id="theme" title="Toggle light/dark">◐ Theme</button>
+  <button class="ghost" id="theme" title="Toggle light and dark">◐ Theme</button>
 </header>
 
 <div class="thesis">
   <b>Numbers come from SQL over every row. Retrieval's job is to make that SQL correct.</b>
   Embeddings cannot count, so no figure here is read out of a vector store. Retrieval supplies the
-  field semantics that make the generated query right — and the pipeline refuses, abstains, or
-  flags its own uncertainty rather than guessing.
+  field semantics that make the generated query right — and the pipeline refuses, abstains, or flags
+  its own uncertainty rather than guessing.
 </div>
 
 <div class="tiles" id="tiles"></div>
 
-<h2>Try it — pick a persona</h2>
-<div class="personas" role="tablist">
-  <button class="ptab" role="tab" data-p="resident" aria-selected="true">New resident · “should I live here?”</button>
-  <button class="ptab" role="tab" data-p="manager" aria-selected="false">City manager · “how is each area doing?”</button>
-  <button class="ptab" role="tab" data-p="honesty" aria-selected="false">Honesty &amp; guardrails</button>
-</div>
+<h2>1 · Who is asking?</h2>
+<div class="personas" id="personas"></div>
+
+<h2>2 · Pick a question, or write your own</h2>
 <div class="chips" id="chips"></div>
 
 <form class="askbar" id="askform" autocomplete="off">
-  <input type="text" id="q" placeholder="Ask anything about Boston's open data…" />
+  <span class="field"><input type="text" id="q" placeholder="e.g. How many rodent complaints in Mattapan?" /></span>
   <button class="go" id="go" type="submit">Ask</button>
 </form>
-<p class="muted" id="hint">The routing decision appears instantly; the answer takes longer when it needs the model.</p>
+<p class="hint">Routing is instant. Answers that need a local model take 15–100 seconds — the pipeline
+  on the left shows exactly what it is waiting on, with a live timer.</p>
 
 <div class="grid">
-  <div class="card">
-    <h3>Progressive disclosure</h3>
-    <ol class="trace" id="trace"><li class="pending"><span class="dot">·</span><div><div class="nm">idle</div><div class="dt muted">Ask a question to see how it narrows.</div></div></li></ol>
+  <div class="card" id="tracecard">
+    <h3>Pipeline <span class="st muted" id="tracehead"></span></h3>
+    <ol class="trace" id="trace">
+      <li class="wait"><span class="dot">·</span><div><div class="nm">idle</div>
+        <div class="dt">Ask a question to watch it narrow, stage by stage.</div></div></li>
+    </ol>
   </div>
   <div class="card" id="out">
     <h3>Answer</h3>
@@ -213,242 +224,242 @@ footer { margin-top: 34px; color: var(--ink-muted); font-size: 12.5px; border-to
 
 <h2>What's under the hood</h2>
 <div class="tech">
-  <div class="card">
-    <h3>Routing</h3>
-    <ul>
-      <li>Six routes, chosen by rules — no model call, so it is instant and explainable</li>
-      <li><code>aggregate</code> · <code>scorecard</code> · <code>definition</code> · <code>lookup</code> · <code>value&nbsp;judgment</code> · <code>unanswerable</code></li>
-      <li>Every decision reports the pattern that fired</li>
-    </ul>
-  </div>
-  <div class="card">
-    <h3>Retrieval</h3>
-    <ul>
-      <li>Hybrid: BM25 (sparse) + <code>bge-m3</code> embeddings (dense)</li>
-      <li>Merged by Reciprocal Rank Fusion, k=60</li>
-      <li>BM25 finds literal codes and figures that embeddings lose</li>
-      <li>Two corpora: view-aware facts ground SQL; data dictionaries answer definitions</li>
-    </ul>
-  </div>
-  <div class="card">
-    <h3>Numbers</h3>
-    <ul>
-      <li>DuckDB over 100% of rows — 1.5M+ records, no sampling</li>
-      <li>Read-only, external file access disabled, table allowlist</li>
-      <li>Generated SQL is screened, bounded, and printed with the answer</li>
-      <li><code>crime_only</code> excludes non-crime police activity — 49% of "crime" rows</li>
-    </ul>
-  </div>
-  <div class="card">
-    <h3>Honesty</h3>
-    <ul>
-      <li>Person-directed lookups refused before retrieval runs</li>
-      <li>Value judgements return metrics and decline the verdict</li>
-      <li>Abstains when the data provably does not record it</li>
-      <li>Explicit confidence, stated in the text — not hidden in a field</li>
-    </ul>
-  </div>
-  <div class="card">
-    <h3>Models — all local</h3>
-    <ul>
-      <li><code>qwen2.5-coder:7b</code> writes the SQL</li>
-      <li><code>granite3.1-dense:8b</code> writes grounded prose</li>
-      <li><code>bge-m3</code> embeds (multilingual, 1024-dim)</li>
-      <li>No cloud APIs, no keys</li>
-    </ul>
-  </div>
-  <div class="card">
-    <h3>Also exposed over MCP</h3>
-    <ul>
-      <li><code>ask</code> — this whole pipeline</li>
-      <li><code>query</code> — the locked SQL path</li>
-      <li><code>semantic_rules</code> — tables, rules, worked examples</li>
-      <li>Plus the data catalog: tables, schemas, joins, samples</li>
-    </ul>
-  </div>
+  <div class="card"><h3>Routing</h3><ul>
+    <li>Six routes, chosen by rules — instant and explainable</li>
+    <li>Three of them answer with <b>no model at all</b></li>
+    <li>Every decision reports the pattern that fired</li></ul></div>
+  <div class="card"><h3>Retrieval</h3><ul>
+    <li>Hybrid: BM25 (sparse) + <code>bge-m3</code> (dense)</li>
+    <li>Merged by Reciprocal Rank Fusion, k=60</li>
+    <li>BM25 finds literal codes and figures embeddings lose</li>
+    <li>Separate corpora for SQL grounding and definitions</li></ul></div>
+  <div class="card"><h3>Numbers</h3><ul>
+    <li>DuckDB over 100% of rows — 1.67M records, no sampling</li>
+    <li>Read-only, external file access disabled, table allowlist</li>
+    <li>Generated SQL screened, bounded, and shown to you</li>
+    <li><code>crime_only</code> drops 49% of "crime" rows — not crimes</li></ul></div>
+  <div class="card"><h3>Honesty</h3><ul>
+    <li>Person-directed lookups refused before retrieval runs</li>
+    <li>Value judgements return metrics and decline the verdict</li>
+    <li>Abstains when the data provably does not record it</li>
+    <li>Confidence stated in the text, not hidden in a field</li></ul></div>
+  <div class="card"><h3>Models — all local</h3><ul>
+    <li><code>qwen2.5-coder:7b</code> writes the SQL</li>
+    <li><code>granite3.1-dense:8b</code> writes grounded prose</li>
+    <li><code>bge-m3</code> embeds (multilingual, 1024-dim)</li>
+    <li>No cloud APIs, no keys</li></ul></div>
+  <div class="card"><h3>Also exposed over MCP</h3><ul>
+    <li><code>ask</code> — this whole pipeline</li>
+    <li><code>query</code> — the locked SQL path</li>
+    <li><code>semantic_rules</code> — tables, rules, examples</li>
+    <li>Plus the catalog: tables, schemas, joins, samples</li></ul></div>
 </div>
 
-<footer id="foot">Boston open data via Analyze Boston · answers are grounded in the committed extracts and may lag the live portal.</footer>
+<footer id="foot">Boston open data via Analyze Boston.</footer>
 </div>
 
 <script>
-const EXAMPLES = {
-  resident: [
-    ["How many crimes were there in Roxbury in 2025?", "counting, scoped by neighbourhood and year"],
-    ["What is the typical home value in Dorchester?", "ZIP-scoped, flagged as approximate"],
-    ["How many total acres of parkland are there?", "one figure over all 577 park sites"],
-    ["Is Roxbury safe?", "a value judgement — watch it decline"],
-  ],
-  manager: [
-    ["Which department is slowest to close 311 cases?", "ranking across departments"],
-    ["What is the average hours to close a 311 case?", "excludes still-open cases"],
-    ["How many food inspections had critical violations?", "inspection grain, not violation grain"],
-    ["How many crimes per neighbourhood in 2025?", "multi-row comparison"],
-  ],
-  honesty: [
-    ["Where does John Smith live?", "refused before retrieval runs"],
-    ["Why was this restaurant's license suspended?", "the data records codes, not causes"],
-    ["How many 311 complaints this year compared to last year?", "311 covers 2026 only"],
-    ["What does on_time mean for a 311 case?", "answered from the data dictionary"],
-  ],
-};
+const PERSONAS = [
+  { id:"resident", ico:"⌂", nm:"New resident",
+    who:"“I'm moving to Boston — which neighbourhood fits?”",
+    qs:[
+      ["How many crimes were there in Roxbury in 2025?","counting, scoped to a neighbourhood and year"],
+      ["What is the typical home value in Dorchester?","ZIP-scoped, and it tells you so"],
+      ["How many total acres of parkland are there?","one figure over all 577 park sites"],
+      ["Is Roxbury safe?","a value judgement — watch it decline"],
+    ]},
+  { id:"manager", ico:"◫", nm:"City manager",
+    who:"“Which neighbourhoods are underserved?”",
+    qs:[
+      ["How many crimes per neighbourhood in 2025?","ranked comparison across all 26"],
+      ["What is the average hours to close a 311 case?","excludes the 49% still open"],
+      ["Which department is slowest to close 311 cases?","ranking by response time"],
+      ["How many food inspections had critical violations?","inspection grain, not violation grain"],
+    ]},
+  { id:"honesty", ico:"⛊", nm:"Honesty & limits",
+    who:"“What will it refuse to answer, and why?”",
+    qs:[
+      ["Where does John Smith live?","refused before retrieval even runs"],
+      ["Why was this restaurant's license suspended?","the data records codes, never causes"],
+      ["How many 311 complaints this year compared to last year?","311 covers 2026 only"],
+      ["What does on_time mean for a 311 case?","answered from the data dictionary"],
+    ]},
+];
 
 const $ = (s) => document.querySelector(s);
-const el = (t, c, x) => { const n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; };
-const fmt = (v) => typeof v === "number" ? v.toLocaleString(undefined, {maximumFractionDigits: 2}) : v;
+const el = (t,c,x) => { const n=document.createElement(t); if(c)n.className=c; if(x!=null)n.textContent=x; return n; };
+const fmt = (v) => typeof v==="number" ? v.toLocaleString(undefined,{maximumFractionDigits:2}) : v;
 
-/* theme toggle wins over the OS setting, both ways */
 $("#theme").onclick = () => {
   const cur = document.documentElement.getAttribute("data-theme");
-  const dark = cur ? cur === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  const dark = cur ? cur==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
   document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
 };
 
-function renderChips(p) {
-  const box = $("#chips"); box.textContent = "";
-  for (const [q, tag] of EXAMPLES[p]) {
-    const b = el("button", "chip"); b.type = "button";
-    b.appendChild(document.createTextNode(q));
-    b.appendChild(el("span", "tag", tag));
-    b.onclick = () => { $("#q").value = q; submit(); };
+let active = PERSONAS[0].id;
+function renderPersonas() {
+  const box = $("#personas"); box.textContent="";
+  PERSONAS.forEach((p) => {
+    const b = el("button","persona"); b.type="button";
+    b.setAttribute("aria-pressed", String(p.id===active));
+    const top = el("div","top");
+    top.appendChild(el("span","ico",p.ico));
+    top.appendChild(el("span","nm",p.nm));
+    b.appendChild(top);
+    b.appendChild(el("div","who",p.who));
+    b.appendChild(el("span","cnt", p.qs.length+" examples"));
+    b.onclick = () => { active=p.id; renderPersonas(); renderChips(); };
     box.appendChild(b);
-  }
-}
-document.querySelectorAll(".ptab").forEach((t) => {
-  t.onclick = () => {
-    document.querySelectorAll(".ptab").forEach((o) => o.setAttribute("aria-selected", String(o === t)));
-    renderChips(t.dataset.p);
-  };
-});
-renderChips("resident");
-
-function renderTrace(stages, pendingLabel) {
-  const ol = $("#trace"); ol.textContent = "";
-  stages.forEach((s, i) => {
-    const li = el("li");
-    li.appendChild(el("span", "dot", String(i + 1)));
-    const d = el("div");
-    d.appendChild(el("div", "nm", s.stage));
-    d.appendChild(el("div", "dt", s.detail || "—"));
-    li.appendChild(d);
-    ol.appendChild(li);
   });
-  if (pendingLabel) {
-    const li = el("li", "pending");
-    li.appendChild(el("span", "dot", "…"));
+}
+function renderChips() {
+  const p = PERSONAS.find((x)=>x.id===active);
+  const box = $("#chips"); box.textContent="";
+  p.qs.forEach(([q,tag]) => {
+    const b = el("button","chip"); b.type="button";
+    const c = el("span","q");
+    c.appendChild(document.createTextNode(q));
+    c.appendChild(el("span","tag",tag));
+    b.appendChild(c); b.appendChild(el("span","arrow","→"));
+    b.onclick = () => { $("#q").value=q; submit(); };
+    box.appendChild(b);
+  });
+}
+renderPersonas(); renderChips();
+
+/* Stages 0-3 have already finished by the time /api/plan returns, so they
+   render as done. The execute stage is genuinely in flight, so it gets a
+   spinner and a real elapsed counter — deliberately no percentage, because
+   we cannot know how far through a model call we are. */
+let timerId = null;
+const stopTimer = () => { if (timerId) { clearInterval(timerId); timerId=null; } };
+
+function renderTrace(stages, pending) {
+  stopTimer();
+  const ol = $("#trace"); ol.textContent="";
+  stages.forEach((s) => {
+    const li = el("li","done");
+    li.appendChild(el("span","dot","✓"));
     const d = el("div");
-    d.appendChild(el("div", "nm", "execute"));
-    d.appendChild(el("div", "dt muted", pendingLabel));
+    d.appendChild(el("div","nm",s.stage));
+    d.appendChild(el("div","dt",s.detail || "—"));
     li.appendChild(d); ol.appendChild(li);
+  });
+  if (pending) {
+    const li = el("li","active");
+    li.appendChild(el("span","dot",""));
+    const d = el("div");
+    d.appendChild(el("div","nm","execute"));
+    d.appendChild(el("div","dt",pending));
+    const t = el("div","timer","0.0s"); d.appendChild(t);
+    li.appendChild(d); ol.appendChild(li);
+    const t0 = performance.now();
+    timerId = setInterval(() => { t.textContent = ((performance.now()-t0)/1000).toFixed(1)+"s"; }, 100);
   }
 }
 
-const CONF = { high: ["good", "●", "high"], medium: ["warning", "▲", "medium"], low: ["critical", "■", "low"] };
-const OUTCOME = {
-  blocked:        ["critical", "⦸", "refused"],
-  unanswerable:   ["warning", "▲", "abstained"],
-  value_judgment: ["warning", "▲", "declined"],
-};
+function loading(on) {
+  const c = $("#tracecard");
+  const bar = c.querySelector(".loadbar");
+  if (on && !bar) { const b = el("div","loadbar"); b.appendChild(el("i")); c.prepend(b); }
+  if (!on && bar) bar.remove();
+}
+
+const CONF = { high:["good","●","high"], medium:["warning","▲","medium"], low:["critical","■","low"] };
+const OUT  = { blocked:["critical","⦸","refused"], abstained:["warning","▲","abstained"],
+               declined:["warning","▲","declined"] };
 
 function renderAnswer(a) {
-  const out = $("#out"); out.textContent = "";
-  out.appendChild(el("h3", null, "Answer"));
+  const out = $("#out"); out.textContent="";
+  out.appendChild(el("h3",null,"Answer"));
 
-  const badges = el("div", "badges");
-  const rb = el("span", "badge route"); rb.textContent = a.route; badges.appendChild(rb);
-  // Status colour never carries meaning alone: always an icon + a word.
-  const oc = a.blocked ? "blocked" : a.abstained ? "unanswerable" : a.refused_value_judgment ? "value_judgment" : null;
+  const badges = el("div","badges");
+  badges.appendChild(el("span","badge route",a.route));
+  const oc = a.blocked ? "blocked" : a.abstained ? "abstained"
+           : a.refused_value_judgment ? "declined" : null;
   if (oc) {
-    const [cls, ic, label] = OUTCOME[oc];
-    const b = el("span", "badge " + cls);
-    b.appendChild(el("span", "ic", ic)); b.appendChild(document.createTextNode(label));
-    badges.appendChild(b);
+    const [cls,ic,lab] = OUT[oc]; const b = el("span","badge "+cls);
+    b.appendChild(el("span","ic",ic)); b.appendChild(document.createTextNode(lab)); badges.appendChild(b);
   }
   if (a.confidence && CONF[a.confidence]) {
-    const [cls, ic, label] = CONF[a.confidence];
-    const b = el("span", "badge " + cls);
-    b.appendChild(el("span", "ic", ic)); b.appendChild(document.createTextNode("confidence: " + label));
-    badges.appendChild(b);
+    const [cls,ic,lab] = CONF[a.confidence]; const b = el("span","badge "+cls);
+    b.appendChild(el("span","ic",ic));
+    b.appendChild(document.createTextNode("confidence: "+lab)); badges.appendChild(b);
   }
-  if (a.elapsed_ms != null) badges.appendChild(el("span", "badge", (a.elapsed_ms / 1000).toFixed(1) + "s"));
+  if (a.elapsed_ms != null) badges.appendChild(el("span","badge",(a.elapsed_ms/1000).toFixed(1)+"s"));
   out.appendChild(badges);
 
-  // A single figure is a hero number, not a chart.
-  if (a.table && a.table.rows.length === 1 && a.table.columns.length === 1) {
-    out.appendChild(el("div", "hero", fmt(a.table.rows[0][0])));
-    out.appendChild(el("div", "hero-k", a.table.columns[0] + " · " + (a.source || "")));
-  } else if (a.table && a.table.rows.length) {
-    out.appendChild(buildTable(a.table));
-  }
-
   const rendered = a.table && a.table.rows.length;
-  if (a.answer && !rendered) {
-    out.appendChild(el("p", "answer", a.answer));
-  } else if (rendered && a.note) {
-    out.appendChild(el("p", "muted", a.note));
-  } else if (a.note) {
-    out.appendChild(el("p", "answer", a.note));
+  const single = rendered && a.table.rows.length===1 && a.table.columns.length===1;
+
+  if (single) {
+    out.appendChild(el("div","hero",fmt(a.table.rows[0][0])));
+    out.appendChild(el("div","hero-k",[a.table.columns[0],a.source].filter(Boolean).join(" · ")));
+    if (a.note) out.appendChild(el("p","muted",a.note));
+  } else if (rendered) {
+    out.appendChild(buildTable(a.table));
+    if (a.note) out.appendChild(el("p","muted",a.note));
+  } else if (a.answer) {
+    out.appendChild(el("p","answer",a.answer));
   }
 
   if (a.sql) {
-    out.appendChild(el("h3", null, "Query executed"));
-    out.appendChild(el("pre", "sql", a.sql));
+    const d = el("details","more"); d.open = true;
+    d.appendChild(el("summary",null,"Query executed"));
+    d.appendChild(el("pre","sql",a.sql)); out.appendChild(d);
   }
   if (a.citations && a.citations.length) {
-    out.appendChild(el("h3", null, "Sources"));
-    const ul = el("ul", "cites");
+    const d = el("details","more"); d.open = true;
+    d.appendChild(el("summary",null,"Sources ("+a.citations.length+")"));
+    const ul = el("ul","cites");
     a.citations.forEach((c) => {
       const bits = [c.dataset];
-      if (c.locator) bits.push("#" + c.locator);
-      if (c.row_count != null) bits.push("over " + c.row_count.toLocaleString() + " rows");
-      const li = el("li", null, bits.join(" "));
-      if (c.note) li.appendChild(el("div", "muted", c.note));
+      if (c.locator) bits.push("#"+c.locator);
+      if (c.row_count != null) bits.push("over "+c.row_count.toLocaleString()+" rows");
+      const li = el("li",null,bits.join(" "));
+      if (c.note) li.appendChild(el("div","muted",c.note));
       ul.appendChild(li);
     });
-    out.appendChild(ul);
+    d.appendChild(ul); out.appendChild(d);
   }
 }
 
-/* Magnitude across categories -> horizontal bars, one series. The value column
-   header names it, so no legend. Bars are anchored to a zero baseline. */
 function buildTable(t) {
-  const numIdx = t.columns.findIndex((_, i) => t.rows.every((r) => typeof r[i] === "number"));
-  const labIdx = numIdx === 0 ? (t.columns.length > 1 ? 1 : -1) : 0;
-  const max = numIdx >= 0 ? Math.max(...t.rows.map((r) => Math.abs(r[numIdx] ?? 0)), 0) : 0;
-  const showBars = numIdx >= 0 && labIdx >= 0 && t.rows.length > 1 && max > 0;
+  const numIdx = t.columns.findIndex((_,i)=>t.rows.every((r)=>typeof r[i]==="number"));
+  const labIdx = numIdx===0 ? (t.columns.length>1?1:-1) : 0;
+  const max = numIdx>=0 ? Math.max(...t.rows.map((r)=>Math.abs(r[numIdx]??0)),0) : 0;
+  const bars = numIdx>=0 && labIdx>=0 && t.rows.length>1 && max>0;
+  // Sorted: a magnitude comparison the reader has to re-sort by eye wastes the bars.
+  const rows = bars ? [...t.rows].sort((a,b)=>(b[numIdx]??0)-(a[numIdx]??0)) : t.rows;
 
-  const tbl = el("table", "res");
-  const thead = el("thead"), trh = el("tr");
-  t.columns.forEach((c) => trh.appendChild(el("th", null, c)));
-  if (showBars) trh.appendChild(el("th", null, ""));
-  thead.appendChild(trh); tbl.appendChild(thead);
-
-  // Sorted descending: a magnitude comparison the reader has to re-sort
-  // by eye is the whole point of the bars, thrown away.
-  const rows = showBars ? [...t.rows].sort((a, b) => (b[numIdx] ?? 0) - (a[numIdx] ?? 0)) : t.rows;
+  const tbl = el("table","res");
+  const trh = el("tr");
+  t.columns.forEach((c)=>trh.appendChild(el("th",null,c)));
+  if (bars) trh.appendChild(el("th",null,""));
+  const th = el("thead"); th.appendChild(trh); tbl.appendChild(th);
 
   const tb = el("tbody");
-  rows.slice(0, 25).forEach((r) => {
+  rows.slice(0,25).forEach((r) => {
     const tr = el("tr");
-    r.forEach((v, i) => {
-      const isLabel = i !== numIdx;
-      const txt = v == null ? (isLabel ? "(unassigned)" : "—") : fmt(v);
-      const td = el("td", i === numIdx ? "num" : null, txt);
-      if (v == null && isLabel) { td.className = "muted"; td.title = "no coordinates, so no neighborhood could be assigned"; }
+    r.forEach((v,i) => {
+      const isLabel = i!==numIdx;
+      const td = el("td", i===numIdx?"num":null, v==null ? (isLabel?"(unassigned)":"—") : fmt(v));
+      if (v==null && isLabel) {
+        td.className = "muted";
+        td.title = "no coordinates, so no neighbourhood could be assigned";
+      }
       tr.appendChild(td);
     });
-    if (showBars) {
-      const td = el("td", "bar");
-      const w = el("span", "barwrap");
-      const f = el("span", "barfill");
-      f.style.width = Math.max(2, Math.round((Math.abs(r[numIdx] ?? 0) / max) * 100)) + "%";
-      f.title = `${r[labIdx]}: ${fmt(r[numIdx])}`;   // per-mark hover
-      w.appendChild(f); td.appendChild(w); tr.appendChild(td);
+    if (bars) {
+      const td = el("td","bar"); const f = el("span","barfill");
+      f.style.width = Math.max(2, Math.round((Math.abs(r[numIdx]??0)/max)*100))+"%";
+      f.title = r[labIdx]+": "+fmt(r[numIdx]);
+      td.appendChild(f); tr.appendChild(td);
     }
     tb.appendChild(tr);
   });
   tbl.appendChild(tb);
-  if (rows.length > 25) tbl.appendChild(el("caption", "muted", `showing the top 25 of ${rows.length} rows`));
+  if (rows.length>25) tbl.appendChild(el("caption",null,"showing the top 25 of "+rows.length+" rows"));
   return tbl;
 }
 
@@ -456,57 +467,61 @@ let busy = false;
 async function submit() {
   const q = $("#q").value.trim();
   if (!q || busy) return;
-  busy = true; $("#go").disabled = true;
+  busy = true; $("#go").disabled = true; $("#go").textContent = "Working…";
+  $("#tracehead").textContent = "";
 
-  const out = $("#out"); out.textContent = "";
-  out.appendChild(el("h3", null, "Answer"));
-  out.appendChild(el("p", "muted", "Routing…"));
+  const out = $("#out"); out.textContent=""; out.appendChild(el("h3",null,"Answer"));
+  out.appendChild(el("p","muted","Routing…"));
 
   try {
-    const pr = await fetch("/api/plan", {method: "POST", headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({question: q})});
+    const pr = await fetch("/api/plan",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({question:q})});
     const plan = await pr.json();
-    renderTrace(plan.stages, plan.will_call_model
-      ? (plan.table ? `querying ${plan.table} and asking the model for SQL…` : "retrieving and generating…")
-      : null);
 
-    out.textContent = ""; out.appendChild(el("h3", null, "Answer"));
-    out.appendChild(el("p", "muted", plan.will_call_model
-      ? "Working — this needs a local model, so give it a moment."
+    // Name the model and the table it is waiting on, rather than a vague spinner.
+    const pending = !plan.will_call_model ? null
+      : plan.table ? "asking qwen2.5-coder:7b for SQL over "+plan.table+", then running it"
+      : "retrieving, then asking granite3.1-dense:8b to answer from the sources";
+    renderTrace(plan.stages, pending);
+    $("#tracehead").textContent = pending ? "· running" : "· resolved with no model call";
+    loading(Boolean(pending));
+
+    out.textContent=""; out.appendChild(el("h3",null,"Answer"));
+    out.appendChild(el("p","muted", pending
+      ? "Working — a local model is generating this, so give it a moment."
       : "Resolving…"));
 
-    const ar = await fetch("/api/ask", {method: "POST", headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({question: q})});
+    const ar = await fetch("/api/ask",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({question:q})});
     const ans = await ar.json();
     if (ans.error) throw new Error(ans.error);
+
     renderTrace(ans.trace && ans.trace.length ? ans.trace : plan.stages, null);
+    $("#tracehead").textContent = "· complete";
     renderAnswer(ans);
   } catch (e) {
-    const out2 = $("#out"); out2.textContent = "";
-    out2.appendChild(el("h3", null, "Answer"));
-    out2.appendChild(el("p", "err", "Failed: " + e.message));
+    const o = $("#out"); o.textContent=""; o.appendChild(el("h3",null,"Answer"));
+    o.appendChild(el("p","err","Failed: "+e.message));
+    $("#tracehead").textContent = "· failed";
   } finally {
-    busy = false; $("#go").disabled = false;
+    stopTimer(); loading(false);
+    busy = false; $("#go").disabled = false; $("#go").textContent = "Ask";
   }
 }
 $("#askform").onsubmit = (e) => { e.preventDefault(); submit(); };
 
-/* ?q=... runs a question on load: shareable demo links, and it lets the
-   rendering be checked without driving the page by hand. */
+/* ?q=... runs on load: shareable demo links. */
 const preset = new URLSearchParams(location.search).get("q");
 if (preset) { $("#q").value = preset; submit(); }
 
-/* Stat tiles describe the corpus this is answering over. */
-fetch("/api/stats").then((r) => r.json()).then((s) => {
+fetch("/api/stats").then((r)=>r.json()).then((s) => {
   const box = $("#tiles");
-  (s.tiles || []).forEach(([v, k]) => {
-    const t = el("div", "tile");
-    t.appendChild(el("div", "v", v));
-    t.appendChild(el("div", "k", k));
-    box.appendChild(t);
+  (s.tiles||[]).forEach(([v,k]) => {
+    const t = el("div","tile");
+    t.appendChild(el("div","v",v)); t.appendChild(el("div","k",k)); box.appendChild(t);
   });
   if (s.footer) $("#foot").textContent = s.footer;
-}).catch(() => {});
+}).catch(()=>{});
 </script>
 </body>
 </html>
