@@ -26,7 +26,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
-from . import guardrails, llm, neighborhoods, retrieval, schema, temporal
+from . import db, guardrails, llm, neighborhoods, retrieval, schema, semantic, temporal
 from .citations import Answer, Citation, abstain, block, decline_judgment
 from .router import Decision, Route, classify
 
@@ -35,9 +35,13 @@ from .router import Decision, Route, classify
 #: crime_only excludes non-crime police activity, property_homes excludes
 #: commercial parcels.
 VIEW_FOR_ROUTE: dict[str, str] = {
+    # Each choice is a semantic-layer rule, not a preference:
+    #  rule 6 - crime_only, or `crime` overstates crime by ~97%
+    #  rule 7 - food_inspections for counts; food_violations has ~4x rows
+    #  rule 8 - property_homes, or 8,545 parking spaces at ~$44k skew it
     "crime": "crime_only",
     "requests": "svc311",
-    "food": "food_violations",
+    "food": "food_inspections",
     "property": "property_homes",
     "parks": "open_space",
 }
@@ -94,7 +98,10 @@ class Engine:
         from . import datasets
 
         if self.con is None:
-            self.con = datasets.connect_views()
+            # Prefer boston.db through scripts/query.py: read-only, external
+            # access disabled, table allowlist. Fall back to lazy views only
+            # if the database has not been built.
+            self.con = db.connect() if db.available() else datasets.connect_views()
         if self.retriever is None:
             self.retriever = retrieval.HybridRetriever(
                 collection="boston_reference_all", persist_dir=None
@@ -106,7 +113,8 @@ class Engine:
             self.sql_grounding = retrieval.HybridRetriever(
                 collection="boston_view_grounding", persist_dir=None
             )
-            self.sql_grounding.index(schema.view_grounding_documents())
+            grounding_docs = semantic.grounding_documents() or schema.view_grounding_documents()
+            self.sql_grounding.index(grounding_docs)
         schema.warm_category_cache(self.con)
         self._ready = True
         return self
@@ -183,6 +191,13 @@ def ask(
     window = temporal.extract(question)
     range_warning = temporal.out_of_range(window)
     trace.append(("anchor", window.describe()))
+
+    # Semantic-layer rules can declare a question unanswerable outright —
+    # 311 holds 2026 only, so a year-over-year 311 comparison has nothing
+    # behind it. Cheaper and more honest than generating SQL that returns 0.
+    if reason := semantic.unanswerable_by_rule(question):
+        trace.append(("rules", f"unanswerable: {reason}"))
+        return abstain(f"Specifically, {reason}.", route="unanswerable", trace=trace)
 
     # ── Stage 3: route ─────────────────────────────────────────────
     decision = classify(question)
@@ -315,12 +330,31 @@ def _answer_with_sql(question, decision, window, con, retriever, trace, caveats)
     """Numbers come from SQL, grounded by retrieved field definitions."""
     subject = pick_subject(question, decision)
     view = VIEW_FOR_ROUTE[subject]
+    # property_homes and open_space carry no neighborhood, so scoping them to
+    # one means going through ZIP, and ZIPs straddle neighborhood lines.
+    if subject in ("property", "parks") and neighborhoods.find_in_question(question):
+        caveats = caveats + (
+            "scoped by ZIP code, which straddles neighborhood boundaries, so "
+            "this is approximate",
+        )
     grounding = retriever.search(question, k=3) if retriever else None
     if grounding:
         trace.append(("ground", f"injected {len(grounding)} field definitions into the SQL prompt"))
 
     plan = schema.generate_sql(question, view, grounding, con=con, window=window)
-    cols, rows = schema.execute(plan, con)
+    # Execute through scripts/query.py: read-only, no external access, table
+    # allowlist. A query that reaches for a raw CSV errors here instead of
+    # quietly returning a wrong number.
+    try:
+        rows, _ = db.run(plan.sql)
+        cols = [c for c in _result_columns(plan.sql, rows)]
+    except db.unsafe_query_error() as exc:
+        trace.append(("execute", f"rejected by query guard: {exc}"))
+        return abstain(
+            f"The generated query was rejected: {exc}",
+            route=decision.route.value,
+            sql=plan.sql,
+        )
     trace.append(("execute", f"{view}: {len(rows)} row(s)"))
 
     if not rows or (len(rows) == 1 and all(v is None for v in rows[0])):
@@ -391,6 +425,21 @@ def _answer_lookup(question, retriever, trace) -> Answer:
 
 
 _AGG_FN = re.compile(r"\b(count|sum|avg|median|min|max|percentile_cont)\s*\(", re.I)
+
+
+def _result_columns(sql: str, rows: list[tuple]) -> list[str]:
+    """Best-effort column labels. db.run() returns rows without names."""
+    width = len(rows[0]) if rows else 0
+    m = re.search(r"select\s+(.*?)\s+from\b", sql, re.I | re.S)
+    if m:
+        parts = [p.strip() for p in re.split(r",(?![^()]*\))", m.group(1))]
+        names = []
+        for p in parts:
+            alias = re.search(r"\bas\s+([a-zA-Z_]\w*)\s*$", p, re.I)
+            names.append(alias.group(1) if alias else p)
+        if len(names) == width:
+            return names
+    return [f"col{i + 1}" for i in range(width)]
 
 
 def _views_in(sql: str) -> tuple[str, ...]:

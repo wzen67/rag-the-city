@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 
-# vector stores and local db artifacts
+# vector stores and local db artifacts (regenerable)
 .chroma/
 data/chroma/
 boston.db

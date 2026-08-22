@@ -124,6 +124,14 @@ def snake(value: str) -> str:
 
 
 def load_dictionary() -> dict[tuple[str, str], dict[str, str]]:
+    """Column metadata from data/dd.md, when it is present.
+
+    dd.md is a generated artifact and is not committed, so a missing file
+    degrades to empty metadata rather than making this module
+    unimportable. Types then fall back to the overrides and VARCHAR.
+    """
+    if not DICTIONARY.exists():
+        return {}
     result = {}
     with DICTIONARY.open(newline="", encoding="utf-8-sig") as fh:
         for row in csv.DictReader(fh):
@@ -238,6 +246,103 @@ def table_resource(table: str) -> str:
 def joins_resource() -> str:
     """JSON list of documented joins and their confidence levels."""
     return json.dumps(JOINS, indent=2)
+
+
+# ---------------------------------------------------------------------------
+# The catalog above describes what exists. These expose the answering
+# engine (rag/) and the locked query path (scripts/query.py), so an MCP
+# client can ask a question or run SQL, not merely browse the schema.
+# ---------------------------------------------------------------------------
+
+_ENGINE: Any = None
+
+
+def _engine():
+    """Build the answering engine once, on first use.
+
+    Deferred rather than built at import: preparing it loads boston.db and
+    embeds the reference corpus, which should not happen just because
+    something imported this module.
+    """
+    global _ENGINE
+    if _ENGINE is None:
+        from rag import engine as rag_engine
+
+        _ENGINE = rag_engine.Engine().prepare()
+    return _ENGINE
+
+
+@mcp.tool
+def semantic_rules() -> dict[str, Any]:
+    """The rules governing which cleaned table to use, and what not to compare.
+
+    Each rule exists because breaking it yields a confidently wrong
+    number rather than an error — `crime` overstates crime by ~97% versus
+    `crime_only`, `property` includes parking spaces, 311 covers 2026 only.
+    """
+    from rag import semantic
+
+    layer = semantic.load()
+    return {
+        "tables": [
+            {"name": t.name, "rows": t.rows, "meaning": t.meaning}
+            for t in layer.tables
+        ],
+        "rules": list(layer.rules),
+        "examples": [{"question": q, "sql": s} for q, s in layer.examples],
+    }
+
+
+@mcp.tool
+def query(sql: str) -> dict[str, Any]:
+    """Run read-only SQL against the cleaned tables in boston.db.
+
+    Enforced by scripts/query.py: read-only connection, external file
+    access disabled, and a table allowlist. Reading a raw CSV errors
+    rather than silently returning a wrong number.
+    """
+    from rag import db
+
+    try:
+        rows, executed = db.run(sql)
+    except Exception as exc:
+        return {"error": f"{type(exc).__name__}: {exc}", "sql": sql}
+    return {"sql": executed, "row_count": len(rows), "rows": rows[:200]}
+
+
+@mcp.tool
+def ask(question: str, show_trace: bool = False) -> dict[str, Any]:
+    """Answer a question about Boston with citations, or decline honestly.
+
+    Routes the question: counts and rates go to SQL over every row,
+    definitions to the data dictionaries, qualitative questions to hybrid
+    retrieval. Person-directed lookups are refused, value judgements get
+    metrics without a verdict, and anything the data does not record is
+    an explicit abstention rather than a guess.
+    """
+    answer = _engine().ask(question)
+    return {
+        "question": question,
+        "answer": answer.text,
+        "route": answer.route,
+        "abstained": answer.abstained,
+        "declined": answer.declined,
+        "blocked": answer.blocked,
+        "sql": answer.sql,
+        "citations": [
+            {
+                "kind": c.kind,
+                "dataset": c.dataset,
+                "locator": c.locator,
+                "row_count": c.row_count,
+                "note": c.note,
+            }
+            for c in answer.citations
+        ],
+        "confidence": getattr(answer.uncertainty, "level", None),
+        "trace": [{"stage": s, "detail": d} for s, d in answer.trace] if show_trace else None,
+        "rendered": answer.render(show_trace=show_trace),
+    }
 
 
 app = mcp.http_app()

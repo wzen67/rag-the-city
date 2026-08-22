@@ -22,7 +22,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from . import datasets, llm
+from . import datasets, llm, semantic
 from .retrieval import Document, Scored
 
 #: Statements that must never come out of a generated query.
@@ -214,11 +214,20 @@ def build_prompt(
             relevant fields. Omitting these is the "without" arm of the
             A/B measurement.
     """
+    # The semantic layer is authoritative where it covers the table: it is
+    # generated from the views, carries the rules, and ships worked
+    # question -> SQL examples. Fall back to live introspection otherwise.
+    described = semantic.load().table(dataset_key) is not None
+    schema_block = (
+        semantic.prompt_block(dataset_key)
+        if described and include_notes
+        else column_summary(dataset_key, con=con, include_notes=include_notes)
+    )
     parts = [
         "You write DuckDB SQL. Output ONLY the query, no prose, no markdown fence.",
-        f"Query the view named `{dataset_key}` directly, e.g. FROM {dataset_key}.",
+        f"Query the table named `{dataset_key}` directly, e.g. FROM {dataset_key}.",
         "",
-        column_summary(dataset_key, con=con, include_notes=include_notes),
+        schema_block,
     ]
     if grounding:
         parts += ["", "-- Field definitions retrieved from the official data dictionaries:"]

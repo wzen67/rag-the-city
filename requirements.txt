@@ -1,5 +1,6 @@
 chromadb>=1.5
 duckdb>=1.5
+fastmcp>=3.4
 geopandas>=1.0
 numpy>=1.26
 openpyxl>=3.1
@@ -10,3 +11,4 @@ pytz>=2024.1
 rank_bm25>=0.2
 requests>=2.31
 scikit-learn>=1.4
+uvicorn>=0.30
