@@ -1,5 +1,8 @@
 """FastMCP catalog server for the derived Boston CSV entities.
 
+Derived tables are streamed from the public Oracle Object Storage bucket
+(rag-the-city, us-ashburn-1) rather than read from data/derived/ on disk.
+
 Run with:
     conda run -n nn uvicorn mcp_server:app --host 127.0.0.1 --port 3000
 """
@@ -7,20 +10,53 @@ Run with:
 from __future__ import annotations
 
 import csv
+import io
 import json
 import os
+from contextlib import contextmanager
 from functools import lru_cache
 from itertools import islice
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
+import requests
 from fastmcp import FastMCP
 
 
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "data"
-DERIVED = DATA / "derived"
 DICTIONARY = DATA / "dd.md"
+
+OBJECT_STORAGE_BASE = (
+    "https://objectstorage.us-ashburn-1.oraclecloud.com"
+    "/n/idn7xwcj4g1k/b/rag-the-city/o"
+)
+
+
+def object_url(table: str) -> str:
+    return f"{OBJECT_STORAGE_BASE}/{table}.csv"
+
+
+@contextmanager
+def open_table_stream(table: str) -> Iterator[io.TextIOWrapper]:
+    """Stream one derived table's CSV object from Oracle Object Storage.
+
+    Mirrors ``path.open(newline="", encoding="utf-8-sig")`` on a local file,
+    so csv.reader/DictReader behave identically over the network stream.
+    """
+    response = requests.get(object_url(table), stream=True, timeout=60)
+    response.raise_for_status()
+    response.raw.decode_content = True
+    # urllib3 auto-releases (and marks closed) the connection the moment it
+    # sees EOF; leave the last "did we hit EOF" read to TextIOWrapper instead
+    # of urllib3, or its next read raises "I/O operation on closed file".
+    response.raw.auto_close = False
+    wrapper = io.TextIOWrapper(response.raw, encoding="utf-8-sig", newline="")
+    try:
+        yield wrapper
+    finally:
+        response.close()
+
 
 TABLE_SOURCES = {
     "service_requests_311": "311-service-requests.csv",
@@ -100,8 +136,7 @@ DICTIONARY_TABLE_ALIASES = {"open_spaces": "open_space"}
 
 
 def table_columns(table: str) -> list[str]:
-    path = DERIVED / f"{table}.csv"
-    with path.open(newline="", encoding="utf-8-sig") as fh:
+    with open_table_stream(table) as fh:
         return [snake(value) for value in (next(csv.reader(fh), []))]
 
 
@@ -123,6 +158,12 @@ def column_type(table: str, column: str) -> str:
 
 
 @lru_cache(maxsize=None)
+def row_count(table: str) -> int:
+    with open_table_stream(table) as fh:
+        return max(0, sum(1 for _ in fh) - 1)
+
+
+@lru_cache(maxsize=None)
 def schema(table: str) -> dict[str, Any]:
     if table not in TABLE_SOURCES:
         raise ValueError(f"Unknown table {table!r}. Available: {', '.join(TABLE_SOURCES)}")
@@ -130,14 +171,11 @@ def schema(table: str) -> dict[str, Any]:
         {"name": column, "type": column_type(table, column)}
         for column in table_columns(table)
     ]
-    path = DERIVED / f"{table}.csv"
-    with path.open("rb") as fh:
-        rows = max(0, sum(1 for _ in fh) - 1)
     return {
         "table": table,
         "source": TABLE_SOURCES[table],
-        "path": str(path),
-        "row_count": rows,
+        "path": object_url(table),
+        "row_count": row_count(table),
         "description": TABLE_DESCRIPTIONS.get(table, "Derived data table."),
         "columns": columns,
     }
@@ -180,7 +218,7 @@ def sample_rows(table: str, limit: int = 5) -> list[dict[str, str]]:
     if table not in TABLE_SOURCES:
         raise ValueError(f"Unknown table {table!r}")
     limit = max(1, min(limit, 100))
-    with (DERIVED / f"{table}.csv").open(newline="", encoding="utf-8-sig") as fh:
+    with open_table_stream(table) as fh:
         return list(islice(csv.DictReader(fh), limit))
 
 
