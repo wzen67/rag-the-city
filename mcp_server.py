@@ -34,7 +34,8 @@ OBJECT_STORAGE_BASE = (
 
 
 def object_url(table: str) -> str:
-    return f"{OBJECT_STORAGE_BASE}/{table}.csv"
+    object_name = OBJECT_STORAGE_NAMES.get(table, table)
+    return f"{OBJECT_STORAGE_BASE}/{object_name}.csv"
 
 
 @contextmanager
@@ -60,7 +61,15 @@ def open_table_stream(table: str) -> Iterator[io.TextIOWrapper]:
 
 TABLE_SOURCES = {
     "service_requests_311": "311-service-requests.csv",
+    "service_requests_311_geography": "derived direct polygon assignment for 311 cases",
+    "police_district_neighborhood_purity": "derived 311 district fallback crosswalk",
+    "service_request_reasons_311": "311_reasons.csv (derived aggregate)",
+    "service_request_types_311": "311_types.csv (derived aggregate)",
     "crime_incidents": "crime-incident-reports-august-2015-to-date-source-new-system.csv",
+    "crime_incidents_geography": "derived direct polygon assignment for crime incidents",
+    "offense_dim": "official RMS offense-code dimension with reviewed crime classes",
+    "offense_codes": "offense_codes.csv (raw RMS offense-code dimension, pre-classification)",
+    "occupancy_codes": "occupancy_codes.csv (property occupancy code dimension)",
     "licenses_board": "licensing-board-licenses.csv",
     "licenses_entertainment": "entertainment-licenses-legacy.csv",
     "open_spaces": "open-space.csv",
@@ -70,9 +79,40 @@ TABLE_SOURCES = {
     "food_violations": "food-establishment-inspections.csv (derived)",
 }
 
+# The descriptive aggregates are uploaded with names beginning ``311_``.
+# Present SQL-safe identifiers to clients while preserving those object names.
+OBJECT_STORAGE_NAMES = {
+    "service_request_reasons_311": "311_reasons",
+    "service_request_types_311": "311_types",
+}
+
 TABLE_DESCRIPTIONS = {
     "service_requests_311": "One row per 311 service request.",
+    "service_requests_311_geography": (
+        "One direct BPDA point-in-polygon assignment per 311 case. "
+        "Use this for canonical neighborhood attribution; unresolved coordinates remain explicit."
+    ),
+    "police_district_neighborhood_purity": (
+        "One modal canonical-neighborhood fallback per police district, derived from "
+        "direct 311 polygon assignments. Use only when a record has no usable coordinates; "
+        "report purity_pct and spatial_coverage_pct."
+    ),
+    "service_request_reasons_311": "Citywide 311 request counts aggregated by reason.",
+    "service_request_types_311": "Citywide 311 request counts aggregated by request type.",
     "crime_incidents": "One row per crime incident/offense record.",
+    "crime_incidents_geography": (
+        "One direct BPDA point-in-polygon assignment per crime incident. "
+        "Use the district fallback only when geography_method is missing_or_invalid_coordinates."
+    ),
+    "offense_dim": (
+        "Official RMS offense-code names classified once at build time. "
+        "Join on offense_code; unclassified codes must not be counted as crimes."
+    ),
+    "offense_codes": (
+        "One row per raw RMS offense code and name, without crime-class review. "
+        "Prefer offense_dim for classified joins; this is the unclassified source dimension."
+    ),
+    "occupancy_codes": "One row per property occupancy code, mapping code to a human-readable description.",
     "food_establishments": "One row per food establishment/property location.",
     "food_inspections": "One row per distinct food inspection visit.",
     "food_violations": "One row per violation reported during a food inspection.",
@@ -98,10 +138,39 @@ GENERATED_TYPES = {
     },
     "food_inspections": {},
     "food_violations": {},
+    "service_requests_311_geography": {
+        "case_enquiry_id": "BIGINT", "neighborhood": "VARCHAR",
+        "neighborhood_raw": "VARCHAR", "police_district": "VARCHAR",
+        "geography_method": "VARCHAR", "boundary_candidate_count": "BIGINT",
+    },
+    "police_district_neighborhood_purity": {
+        "police_district": "VARCHAR", "neighborhood": "VARCHAR",
+        "case_count": "BIGINT", "district_total": "BIGINT",
+        "spatially_assigned_cases": "BIGINT", "purity_pct": "DOUBLE",
+        "spatial_coverage_pct": "DOUBLE", "method": "VARCHAR",
+    },
+    "service_request_reasons_311": {"reason": "VARCHAR", "count": "BIGINT"},
+    "service_request_types_311": {"type": "VARCHAR", "count": "BIGINT"},
+    "crime_incidents_geography": {
+        "incident_number": "VARCHAR", "district": "VARCHAR", "neighborhood": "VARCHAR",
+        "geography_method": "VARCHAR", "boundary_candidate_count": "BIGINT",
+    },
+    "offense_dim": {
+        "offense_code": "VARCHAR", "offense_name": "VARCHAR", "crime_class": "VARCHAR",
+        "classification_source": "VARCHAR",
+    },
+    "offense_codes": {"offense_code": "VARCHAR", "offense_name": "VARCHAR"},
+    "occupancy_codes": {"occupancy_code": "VARCHAR", "description": "VARCHAR"},
 }
 
 # These are relationship metadata, not claims that every row matches.
 JOINS = [
+    {"left_table": "service_requests_311", "left_column": "case_enquiry_id", "right_table": "service_requests_311_geography", "right_column": "case_enquiry_id", "relationship": "one_to_one", "confidence": "exact", "notes": "Direct BPDA polygon assignment. Prefer this canonical neighborhood over the raw 311 label."},
+    {"left_table": "service_requests_311_geography", "left_column": "police_district", "right_table": "police_district_neighborhood_purity", "right_column": "police_district", "relationship": "many_to_one", "confidence": "derived", "notes": "Fallback metadata only. The purity row must not replace a direct point-in-polygon assignment."},
+    {"left_table": "crime_incidents", "left_column": "district", "right_table": "police_district_neighborhood_purity", "right_column": "police_district", "relationship": "many_to_one", "confidence": "derived", "notes": "Fallback for crime records without usable coordinates. Report purity_pct and spatial_coverage_pct; External and Outside of have no fallback."},
+    {"left_table": "crime_incidents", "left_column": "incident_number", "right_table": "crime_incidents_geography", "right_column": "incident_number", "relationship": "one_to_one", "confidence": "exact", "notes": "Direct BPDA polygon attribution. Prefer it over district fallback whenever geography_method is point_in_polygon."},
+    {"left_table": "crime_incidents", "left_column": "offense_code", "right_table": "offense_dim", "right_column": "offense_code", "relationship": "many_to_one", "confidence": "exact", "notes": "Official RMS lookup; unmatched codes are explicitly unclassified and excluded from crime-only totals."},
+    {"left_table": "crime_incidents", "left_column": "offense_code", "right_table": "offense_codes", "right_column": "offense_code", "relationship": "many_to_one", "confidence": "exact", "notes": "Raw RMS name lookup, no crime-class review. Prefer offense_dim unless you need the unclassified source."},
     {"left_table": "food_establishments", "left_column": "establishment_id", "right_table": "food_inspections", "right_column": "establishment_id", "relationship": "one_to_many", "confidence": "exact", "notes": "Generated from property_id; fallback is a stable hash of business/address/ZIP."},
     {"left_table": "food_inspections", "left_column": "inspection_id", "right_table": "food_violations", "right_column": "inspection_id", "relationship": "one_to_many", "confidence": "exact", "notes": "Generated from establishment_id, resultdttm, and result."},
     {"left_table": "service_requests_311", "left_column": "police_district", "right_table": "crime_incidents", "right_column": "district", "relationship": "many_to_many", "confidence": "loose", "notes": "District codes overlap; crime also contains External and Outside of values."},
