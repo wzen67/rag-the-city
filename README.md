@@ -25,3 +25,12 @@ Outputs are written to `data/derived/`.
 
 The server listens on `http://127.0.0.1:3000/mcp` by default. Override the
 host or port with `HOST` and `PORT`.
+
+`mcp_server.py` streams derived tables from Oracle Object Storage rather than
+from disk. `list_tables()`/`describe_table()` need each table's row count and
+header; instead of streaming a full (sometimes 100MB+) CSV to compute those,
+they read them from `catalog_meta.json`, which every build script above
+writes into `data/derived/` via `rag.catalog_meta.update_catalog_meta()` the
+moment it finishes writing a table (merging, so no script clobbers another's
+entries). **Upload `data/derived/catalog_meta.json` to the object storage
+bucket alongside the CSVs whenever you re-run a build script** — the server

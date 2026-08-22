@@ -135,7 +135,27 @@ DICTIONARY_ROWS = load_dictionary()
 DICTIONARY_TABLE_ALIASES = {"open_spaces": "open_space"}
 
 
+@lru_cache(maxsize=1)
+def remote_catalog_meta() -> dict[str, Any]:
+    """Row counts and headers precomputed by parse_csvs.py at build time.
+
+    Reading this tiny sidecar instead of streaming each multi-hundred-MB
+    derived CSV is what keeps list_tables()/describe_table() fast. If it's
+    missing, or a given table isn't in it, callers fall back to the slow
+    (network-scanning) path below.
+    """
+    try:
+        response = requests.get(f"{OBJECT_STORAGE_BASE}/catalog_meta.json", timeout=10)
+        response.raise_for_status()
+        return response.json()
+    except (requests.RequestException, ValueError):
+        return {}
+
+
 def table_columns(table: str) -> list[str]:
+    cached = remote_catalog_meta().get(table)
+    if cached and cached.get("columns"):
+        return [snake(value) for value in cached["columns"]]
     with open_table_stream(table) as fh:
         return [snake(value) for value in (next(csv.reader(fh), []))]
 
@@ -159,6 +179,9 @@ def column_type(table: str, column: str) -> str:
 
 @lru_cache(maxsize=None)
 def row_count(table: str) -> int:
+    cached = remote_catalog_meta().get(table)
+    if cached and "row_count" in cached:
+        return cached["row_count"]
     with open_table_stream(table) as fh:
         return max(0, sum(1 for _ in fh) - 1)
 
