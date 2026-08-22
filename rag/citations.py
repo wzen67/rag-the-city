@@ -66,6 +66,15 @@ class Answer:
     means the data does not contain the answer; declining means the
     question asked for a subjective verdict we will not issue, and we
     return the underlying metrics instead.
+
+    ``uncertainty`` is rendered into the visible text rather than kept as
+    a silent field: the hardest failure class is a correct-sounding tone
+    with no uncertainty signal, and a confidence score nobody reads does
+    not fix it.
+
+    ``trace`` records the progressive-disclosure stages that produced the
+    answer, so a demo can show *how* the pipeline narrowed rather than
+    just what it concluded.
     """
 
     text: str
@@ -73,35 +82,51 @@ class Answer:
     route: str = "unknown"
     abstained: bool = False
     declined: bool = False
+    blocked: bool = False
     sql: str | None = None
+    uncertainty: object | None = None  # guardrails.Uncertainty
+    trace: list[tuple[str, str]] = field(default_factory=list)
+
+    @property
+    def is_grounded_claim(self) -> bool:
+        """True when this answer asserts something about the data."""
+        return not (self.abstained or self.declined or self.blocked)
 
     def __post_init__(self) -> None:
-        if not (self.abstained or self.declined) and not self.citations:
+        if self.is_grounded_claim and not self.citations:
             raise ValueError(
                 f"Answer on route {self.route!r} has no citations. Every "
                 "grounded claim must be traceable; use abstain() instead."
             )
 
-    def render(self) -> str:
+    def render(self, show_trace: bool = False) -> str:
         out = [self.text.strip()]
+        if self.uncertainty is not None:
+            note = self.uncertainty.render()
+            if note:
+                out.append(f"\n{note}")
         if self.sql:
             out.append("\nQuery:\n" + self.sql.strip())
         if self.citations:
             out.append("\nSources:")
             out += [f"  - {c.render()}" for c in self.citations]
+        if show_trace and self.trace:
+            out.append("\nHow this was narrowed:")
+            out += [f"  {i}. {stage}: {detail}" for i, (stage, detail) in enumerate(self.trace, 1)]
         return "\n".join(out)
 
 
-def abstain(reason: str, route: str = "unanswerable") -> Answer:
+def abstain(reason: str, route: str = "unanswerable", **kw) -> Answer:
     """Build an honest non-answer. The 4 anchor rewards this over a guess."""
     return Answer(
         text=f"The data does not record this. {reason}".strip(),
         route=route,
         abstained=True,
+        **kw,
     )
 
 
-def decline_judgment(metrics_text: str, citations: list[Citation]) -> Answer:
+def decline_judgment(metrics_text: str, citations: list[Citation], **kw) -> Answer:
     """Answer a value-laden question with numbers instead of a verdict."""
     return Answer(
         text=(
@@ -111,4 +136,10 @@ def decline_judgment(metrics_text: str, citations: list[Citation]) -> Answer:
         citations=citations,
         route="value_judgment",
         declined=True,
+        **kw,
     )
+
+
+def block(explanation: str, **kw) -> Answer:
+    """Refuse a question on guardrail grounds, before retrieval runs."""
+    return Answer(text=explanation.strip(), route="blocked", blocked=True, **kw)

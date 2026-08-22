@@ -62,11 +62,32 @@ def embed(texts: list[str], model: str = EMBED_MODEL, batch_size: int = 64) -> l
     return out
 
 
+#: Cap on generated tokens. Answers here are short — a figure, a table, a
+#: quoted definition — and an uncapped 8B model will happily continue the
+#: prompt pattern and invent a follow-up Q&A turn. Capping is both a
+#: latency fix and a correctness one.
+MAX_TOKENS = 400
+
+#: Anything after these means the model has started a new turn on its own.
+_RUNAWAY = ("\nQuestion:", "\nQ:", "\nUser:", "\nContext:")
+
+
+def _truncate_runaway(text: str) -> str:
+    """Cut a self-continued Q&A turn off the end of a response."""
+    cut = len(text)
+    for marker in _RUNAWAY:
+        i = text.find(marker)
+        if i != -1:
+            cut = min(cut, i)
+    return text[:cut].strip()
+
+
 def generate(
     prompt: str,
     model: str = CHAT_MODEL,
     temperature: float = 0.0,
     system: str | None = None,
+    max_tokens: int = MAX_TOKENS,
 ) -> str:
     """Single-turn generation. Temperature 0 by default — this is a
     question-answering system, not a creative one."""
@@ -74,11 +95,16 @@ def generate(
         "model": model,
         "prompt": prompt,
         "stream": False,
-        "options": {"temperature": temperature},
+        "options": {
+            "temperature": temperature,
+            "num_predict": max_tokens,
+            "stop": ["\nQuestion:", "\nQ:", "\nUser:"],
+        },
     }
     if system:
         payload["system"] = system
-    return _post("/api/generate", payload).get("response", "").strip()
+    raw = _post("/api/generate", payload).get("response", "").strip()
+    return _truncate_runaway(raw)
 
 
 def health() -> dict[str, bool]:

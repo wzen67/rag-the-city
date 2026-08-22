@@ -275,4 +275,6 @@ SELECT
     ADDRESS    AS address,
     ZipCode    AS zipcode,
     DISTRICT   AS source_district
-FROM read_csv_auto('data/open-space.csv.gz', ignore_errors = true, all_varchar = true);
+-- strict_mode=false, NOT ignore_errors: ignore_errors silently parses only
+-- 272 of 577 rows and undercounts parkland by 60% (2,327 vs 5,862 acres).
+FROM read_csv_auto('data/open-space.csv.gz', strict_mode = false, all_varchar = true);
