@@ -166,7 +166,7 @@ def grounding_documents() -> list[Document]:
     return docs
 
 
-def prompt_block(table: str, examples: int = 4) -> str:
+def prompt_block(table: str, examples: int = 2) -> str:
     """The schema section of a SQL prompt, built from the semantic layer.
 
     Always includes every rule. The rules are short, there are only
@@ -206,7 +206,9 @@ def unanswerable_by_rule(question: str) -> str | None:
         w in q for w in ("year over year", "year-over-year", "compared to last year",
                          "vs last year", "previous year", "last year", "since 2023",
                          "since 2024", "since 2025", "over the last 3 years",
-                         "over the past 3 years", "trend over")
+                         "over the past 3 years", "trend over", "trend in",
+                         "per year", "each year", "by year", "yearly",
+                         "year on year", "annually", "over the years")
     )
     if wants_311 and compares_years:
         return (

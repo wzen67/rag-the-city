@@ -1,8 +1,8 @@
 # Eval results — Boston Neighborhood Intelligence
 
-Generated: 2026-08-22 17:17 UTC
-System module: `not wired — engine.ask() missing`
-Schema grounding flag (ours default run): `n/a — route not wired`
+Generated: 2026-08-22 19:16 UTC
+System module: `engine`
+Schema grounding flag (ours default run): `1 / 4`
 
 Mechanical scoring only (exact/tolerance counts, regex abstention, citation presence).
 Gold values: DuckDB over `data/*.csv.gz` via `eval/fill_gold.py`.
@@ -11,23 +11,23 @@ Gold values: DuckDB over `data/*.csv.gz` via `eval/fill_gold.py`.
 
 | Metric | Naive baseline | Ours | Delta |
 | --- | --- | --- | --- |
-| Overall accuracy | 0% | n/a — route not wired | |
-| Counting questions correct | 0 / 7 | n/a — route not wired | |
-| Retrieval hit rate @5 | 0% | n/a — route not wired | |
+| Overall accuracy | 0% | 25% | |
+| Counting questions correct | 0 / 7 | 0 / 7 | |
+| Retrieval hit rate @5 | 0% | 0% | |
 | SQL accuracy without schema grounding | n/a (naive has no SQL) | n/a — re-run with --no-schema-grounding after B wires SQL | |
-| SQL accuracy with schema grounding | n/a | n/a — route not wired | |
-| Correct abstentions | 0 / 4 | n/a — route not wired | |
-| Fabrications | 11 | n/a — route not wired | |
-| Citations present (non-abstain) | 0 / 16 | n/a — route not wired | |
+| SQL accuracy with schema grounding | n/a | 1 / 4 | |
+| Correct abstentions | 0 / 4 | 2 / 4 | |
+| Fabrications | 11 | 5 | |
+| Citations present (non-abstain) | 0 / 16 | 13 / 16 | |
 
 ## By persona
 
 | Persona | Naive | Ours |
 | --- | --- | --- |
-| resident | 0 / 10 | n/a — route not wired |
-| manager | 0 / 10 | n/a — route not wired |
+| resident | 0 / 10 | 2 / 10 |
+| manager | 0 / 10 | 3 / 10 |
 
-## Per-question (naive; system not wired)
+## Per-question (ours)
 
 | ID | Persona | Route | Pass | Notes |
 | --- | --- | --- | --- | --- |
@@ -36,25 +36,25 @@ Gold values: DuckDB over `data/*.csv.gz` via `eval/fill_gold.py`.
 | R03 | resident | lookup | no | missing expected theme |
 | R04 | resident | definition | no | definition miss |
 | R05 | resident | aggregate | no | count gold=62.3 miss |
-| R06 | resident | value_judgment | no | must refuse 'safe' and still cite metrics |
+| R06 | resident | value_judgment | yes | value-judgment refuse+metrics |
 | R07 | resident | unanswerable | no | expected abstention |
 | R08 | resident | aggregate | no | count gold=45.7 miss |
 | M01 | manager | aggregate | no | rank miss |
 | M02 | manager | aggregate | no | equity miss |
-| M03 | manager | aggregate | no | rank miss |
+| M03 | manager | aggregate | yes | rank labels present |
 | M04 | manager | aggregate | no | count gold=3537 miss |
 | M05 | manager | aggregate | no | count gold=7005 miss |
-| M06 | manager | unanswerable | no | expected abstention |
+| M06 | manager | unanswerable | yes | abstain |
 | M07 | manager | aggregate | no | rank miss |
-| M08 | manager | unanswerable | no | expected abstention |
+| M08 | manager | unanswerable | yes | abstain |
 | T01 | resident | aggregate | no | count gold=7957 miss |
 | T02 | manager | unanswerable | no | expected abstention |
-| T03 | resident | value_judgment | no | must refuse 'safe' and still cite metrics |
+| T03 | resident | value_judgment | yes | value-judgment refuse+metrics |
 | T04 | manager | aggregate | no | count gold=0 miss |
 
 ## Gaps
 
-- engine.ask() not importable (tried src.qa, src.engine, engine, app.engine). Ours column is n/a until Person B lands the router.
+- None recorded.
 
 ## How to reproduce
 

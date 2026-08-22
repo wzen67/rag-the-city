@@ -25,6 +25,11 @@ from dataclasses import dataclass
 from . import datasets, llm, semantic
 from .retrieval import Document, Scored
 
+#: Generated SQL is one short statement. Generation time scales with tokens
+#: emitted, so capping the output is the single biggest latency lever —
+#: far more than trimming the prompt.
+SQL_MAX_TOKENS = 160
+
 #: Statements that must never come out of a generated query.
 _FORBIDDEN = re.compile(
     r"\b(insert|update|delete|drop|create|alter|attach|detach|copy|pragma|"
@@ -303,7 +308,7 @@ def generate_sql(
             "Question:",
             f"Restrict results to {window.describe()}.\nQuestion:",
         )
-    raw = llm.generate(prompt, model=model)
+    raw = llm.generate(prompt, model=model, max_tokens=SQL_MAX_TOKENS)
     return SQLPlan(
         sql=sanitize(raw),
         dataset_key=dataset_key,

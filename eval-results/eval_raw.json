@@ -561,12 +561,12 @@
     {
       "id": "T03",
       "answer": {
-        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "answer": "The provided data does not contain information about the safety of Roxbury or any other specific area. It includes various cases related to parking enforcement, abandoned vehicles, graffiti, needle pickup, and street repairs. To determine the safety of Roxbury, you may want to consider factors such as crime rates, community resources, and local news reports.",
         "sql": null,
         "citations": [],
         "retrieved_ids": [],
         "schema_grounding": false,
-        "engine": "head-rows-extractive",
+        "engine": "ollama",
         "abstained": false,
         "refused_value_judgment": false
       },
@@ -583,8 +583,8 @@
         "is_counting": false,
         "must_abstain": false,
         "schema_grounding": false,
-        "engine": "head-rows-extractive",
-        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "engine": "ollama",
+        "answer_preview": "The provided data does not contain information about the safety of Roxbury or any other specific area. It includes various cases related to parking enforcement, abandoned vehicles, graffiti, needle pickup, and street repairs. To determine the safety of Roxbury, you may want to co",
         "label": "naive",
         "schema_flag": false
       }
@@ -621,7 +621,1156 @@
       }
     }
   ],
-  "ours": [],
+  "ours": [
+    {
+      "id": "R01",
+      "answer": {
+        "answer": "The data does not record this. I could not answer that reliably (BinderException).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": true,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "R01",
+        "persona": "resident",
+        "route": "scorecard",
+        "pass": false,
+        "why": "scorecard missing name or metric",
+        "citation_ok": false,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "rag.engine",
+        "answer_preview": "The data does not record this. I could not answer that reliably (BinderException).",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "R02",
+      "answer": {
+        "answer": "count(*)\n636\n\nComputed over crime_only for 2024.",
+        "sql": "SELECT count(*) FROM crime_only WHERE neighborhood = 'Roxbury' AND year = 2024 AND crime_class = 'violent'\nLIMIT 200",
+        "citations": [
+          {
+            "dataset": "crime_only",
+            "locator": null,
+            "kind": "sql",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "example-1",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "example-2",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "rule-6",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "crime_only",
+          "semantic_layer#example-1",
+          "semantic_layer#example-2",
+          "semantic_layer#rule-6"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "R02",
+        "persona": "resident",
+        "route": "aggregate",
+        "pass": false,
+        "why": "count gold=757 miss",
+        "citation_ok": true,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": false,
+        "is_counting": true,
+        "must_abstain": false,
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "answer_preview": "count(*)\n636\n\nComputed over crime_only for 2024.",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "R03",
+      "answer": {
+        "answer": "The context does not provide specific information on the types of complaints received from East Boston residents via the 311 system. It only mentions that East Boston is part of District 1, which includes the neighborhoods of Charlestown, East Boston, and the North End. For detailed complaint data, please refer to the 311 data dictionary or the actual 311 complaint records.\n\nSource: [311_crm_value_codes.pdf] - District 1 - Charlestown, East Boston, North End (Sal LaMattina)",
+        "sql": null,
+        "citations": [
+          {
+            "dataset": "311_crm_value_codes.pdf",
+            "locator": "QUEUE",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "311_data_dictionary.pdf",
+            "locator": "Neighborhood",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "311_crm_value_codes.pdf",
+            "locator": "QUEUE",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "311_crm_value_codes.pdf",
+            "locator": "QUEUE",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "311_crm_value_codes.pdf",
+            "locator": "QUEUE",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "311_crm_value_codes.pdf#QUEUE",
+          "311_data_dictionary.pdf#Neighborhood",
+          "311_crm_value_codes.pdf#QUEUE",
+          "311_crm_value_codes.pdf#QUEUE",
+          "311_crm_value_codes.pdf#QUEUE"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "R03",
+        "persona": "resident",
+        "route": "lookup",
+        "pass": false,
+        "why": "missing expected theme",
+        "citation_ok": true,
+        "fabrication": false,
+        "retrieval_hit@5": false,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "rag.engine",
+        "answer_preview": "The context does not provide specific information on the types of complaints received from East Boston residents via the 311 system. It only mentions that East Boston is part of District 1, which includes the neighborhoods of Charlestown, East Boston, and the North End. For detai",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "R04",
+      "answer": {
+        "answer": "For a 311 case, \"on_time\" means that the case was closed on or before the Target Close Date. This is indicated by the value \"ONTIME\". It is a compliance flag, not a duration, so the elapsed time must be computed from the open_dt and closed_dt.",
+        "sql": null,
+        "citations": [
+          {
+            "dataset": "311_data_dictionary.pdf",
+            "locator": "On Time?",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "service_requests-field-definitions",
+            "locator": "on_time",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "crime_field_explanation.xlsx",
+            "locator": "[occurred_on] [datetime2](7) NULL,",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "service_requests-field-definitions",
+            "locator": "case_status",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "311_data_dictionary.pdf#On Time?",
+          "service_requests-field-definitions#on_time",
+          "crime_field_explanation.xlsx#[occurred_on] [datetime2](7) NULL,",
+          "service_requests-field-definitions#case_status"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "R04",
+        "persona": "resident",
+        "route": "definition",
+        "pass": false,
+        "why": "definition miss",
+        "citation_ok": true,
+        "fabrication": false,
+        "retrieval_hit@5": false,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "answer_preview": "For a 311 case, \"on_time\" means that the case was closed on or before the Target Close Date. This is indicated by the value \"ONTIME\". It is a compliance flag, not a duration, so the elapsed time must be computed from the open_dt and closed_dt.",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "R05",
+      "answer": {
+        "answer": "CAST(SUM(CASE WHEN result = '*' THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(*)\n0.0\n\nComputed over food_inspections.",
+        "sql": "SELECT CAST(SUM(CASE WHEN result = '*' THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(*) FROM food_inspections WHERE zip = '02135'\nLIMIT 200",
+        "citations": [
+          {
+            "dataset": "food_inspections",
+            "locator": null,
+            "kind": "sql",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "food_violations",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "rule-7",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "food_inspections",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "food_inspections",
+          "semantic_layer#food_violations",
+          "semantic_layer#rule-7",
+          "semantic_layer#food_inspections"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "R05",
+        "persona": "resident",
+        "route": "aggregate",
+        "pass": false,
+        "why": "count gold=62.3 miss",
+        "citation_ok": true,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": false,
+        "is_counting": true,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "rag.engine",
+        "answer_preview": "CAST(SUM(CASE WHEN result = '*' THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(*)\n0.0\n\nComputed over food_inspections.",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "R06",
+      "answer": {
+        "answer": "That asks for a judgment I will not make for you. Here is what the data does say:\n\n- crime incidents: 7,471 in Jamaica Plain (no time window (all available years))\n- 311 requests: 4,361 in Jamaica Plain (no time window (all available years))",
+        "sql": null,
+        "citations": [
+          {
+            "dataset": "crime_only",
+            "locator": null,
+            "kind": "sql",
+            "row_count": 7471,
+            "note": "crime_only excludes non-crime police activity"
+          },
+          {
+            "dataset": "svc311",
+            "locator": null,
+            "kind": "sql",
+            "row_count": 4361,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "crime_only",
+          "svc311"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": true
+      },
+      "score": {
+        "id": "R06",
+        "persona": "resident",
+        "route": "value_judgment",
+        "pass": true,
+        "why": "value-judgment refuse+metrics",
+        "citation_ok": true,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "rag.engine",
+        "answer_preview": "That asks for a judgment I will not make for you. Here is what the data does say:\n\n- crime incidents: 7,471 in Jamaica Plain (no time window (all available years))\n- 311 requests: 4,361 in Jamaica Plain (no time window (all available years))",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "R07",
+      "answer": {
+        "answer": "The context provided does not specify the best tourist attractions in the North End. However, the North End is mentioned as part of District 1, which is represented by Sal LaMattina. Some popular tourist attractions in the North End include Freedom Trail, Paul Revere House, and the North End's Italian heritage, with numerous Italian bakeries, restaurants, and shops.\n\nReference(s):\n[311_crm_value_codes.pdf] - District 1 - Charlestown, East Boston, North End (Sal LaMattina)",
+        "sql": null,
+        "citations": [
+          {
+            "dataset": "311_crm_value_codes.pdf",
+            "locator": "QUEUE",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "311_crm_value_codes.pdf",
+            "locator": "QUEUE",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "311_crm_value_codes.pdf",
+            "locator": "QUEUE",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "311_crm_value_codes.pdf",
+            "locator": "QUEUE",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "property_fy2026_data_key.pdf",
+            "locator": "ORIENTATION",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "311_crm_value_codes.pdf#QUEUE",
+          "311_crm_value_codes.pdf#QUEUE",
+          "311_crm_value_codes.pdf#QUEUE",
+          "311_crm_value_codes.pdf#QUEUE",
+          "property_fy2026_data_key.pdf#ORIENTATION"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "R07",
+        "persona": "resident",
+        "route": "unanswerable",
+        "pass": false,
+        "why": "expected abstention",
+        "citation_ok": true,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": true,
+        "schema_grounding": false,
+        "engine": "rag.engine",
+        "answer_preview": "The context provided does not specify the best tourist attractions in the North End. However, the North End is mentioned as part of District 1, which is represented by Sal LaMattina. Some popular tourist attractions in the North End include Freedom Trail, Paul Revere House, and t",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "R08",
+      "answer": {
+        "answer": "on_time | count(*)\nOVERDUE | 6,276\nONTIME | 5,297\n\nComputed over svc311.",
+        "sql": "SELECT on_time, count(*) FROM svc311 WHERE neighborhood = 'Dorchester' GROUP BY 1\nLIMIT 200",
+        "citations": [
+          {
+            "dataset": "svc311",
+            "locator": null,
+            "kind": "sql",
+            "row_count": 2,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "example-9",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "rule-9",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "svc311",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "svc311",
+          "semantic_layer#example-9",
+          "semantic_layer#rule-9",
+          "semantic_layer#svc311"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "R08",
+        "persona": "resident",
+        "route": "aggregate",
+        "pass": false,
+        "why": "count gold=45.7 miss",
+        "citation_ok": true,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": false,
+        "is_counting": true,
+        "must_abstain": false,
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "answer_preview": "on_time | count(*)\nOVERDUE | 6,276\nONTIME | 5,297\n\nComputed over svc311.",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "M01",
+      "answer": {
+        "answer": "That asks for a judgment I will not make for you. Here is what the data does say:\n\n- crime incidents: 146,933 (no time window (all available years))\n- 311 requests: 78,526 (no time window (all available years))",
+        "sql": null,
+        "citations": [
+          {
+            "dataset": "crime_only",
+            "locator": null,
+            "kind": "sql",
+            "row_count": 146933,
+            "note": "crime_only excludes non-crime police activity"
+          },
+          {
+            "dataset": "svc311",
+            "locator": null,
+            "kind": "sql",
+            "row_count": 78526,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "crime_only",
+          "svc311"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": true
+      },
+      "score": {
+        "id": "M01",
+        "persona": "manager",
+        "route": "aggregate",
+        "pass": false,
+        "why": "rank miss",
+        "citation_ok": true,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "answer_preview": "That asks for a judgment I will not make for you. Here is what the data does say:\n\n- crime incidents: 146,933 (no time window (all available years))\n- 311 requests: 78,526 (no time window (all available years))",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "M02",
+      "answer": {
+        "answer": "avg_hours_to_close | total_value\n146.94987468671678 | 103800.0\n146.94987468671678 | 104500.0\n146.94987468671678 | 106800.0\n178.40918437285814 | 121400.0\n146.94987468671678 | 125900.0\n146.94987468671678 | 126800.0\n146.94987468671678 | 134364.0\n178.40918437285814 | 135400.0\n146.94987468671678 | 147300.0\n146.94987468671678 | 149900.0\n178.40918437285814 | 156500.0\n146.94987468671678 | 156600.0\n... 188 more rows\n\nComputed over svc311, property_homes.",
+        "sql": "SELECT \n    AVG(hours_to_close) AS avg_hours_to_close,\n    total_value\nFROM \n    svc311\nJOIN \n    property_homes ON svc311.zipcode = property_homes.zipcode\nWHERE \n    svc311.zipcode IN ('02119', '02130')\nGROUP BY \n    total_value\nORDER BY \n    total_value\nLIMIT 200",
+        "citations": [
+          {
+            "dataset": "svc311, property_homes",
+            "locator": null,
+            "kind": "sql",
+            "row_count": 200,
+            "note": "scoped by ZIP code, which straddles neighborhood boundaries, so this is approximate"
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "property_homes",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "property",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "example-1",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "svc311, property_homes",
+          "semantic_layer#property_homes",
+          "semantic_layer#property",
+          "semantic_layer#example-1"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "M02",
+        "persona": "manager",
+        "route": "aggregate",
+        "pass": false,
+        "why": "equity miss",
+        "citation_ok": true,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": true,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "rag.engine",
+        "answer_preview": "avg_hours_to_close | total_value\n146.94987468671678 | 103800.0\n146.94987468671678 | 104500.0\n146.94987468671678 | 106800.0\n178.40918437285814 | 121400.0\n146.94987468671678 | 125900.0\n146.94987468671678 | 126800.0\n146.94987468671678 | 134364.0\n178.40918437285814 | 135400.0\n146.949",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "M03",
+      "answer": {
+        "answer": "department | on_time | n\nBTDT | ONTIME | 14,178\nBTDT | OVERDUE | 40,089\nDISB | ONTIME | 1\nDISB | OVERDUE | 24\nGEN_ | ONTIME | 6,034\nGEN_ | OVERDUE | 1\nINFO | ONTIME | 3,908\nINFO | OVERDUE | 1,196\nISD | ONTIME | 11,604\nISD | OVERDUE | 1,478\nONS_ | ONTIME | 4\nONS_ | OVERDUE | 9\n\nComputed over svc311.",
+        "sql": "SELECT department, on_time, count(*) AS n FROM svc311 GROUP BY 1, 2 ORDER BY department, on_time\nLIMIT 200",
+        "citations": [
+          {
+            "dataset": "svc311",
+            "locator": null,
+            "kind": "sql",
+            "row_count": 12,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "svc311",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "rule-11",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "example-9",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "svc311",
+          "semantic_layer#svc311",
+          "semantic_layer#rule-11",
+          "semantic_layer#example-9"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "M03",
+        "persona": "manager",
+        "route": "aggregate",
+        "pass": true,
+        "why": "rank labels present",
+        "citation_ok": true,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": true,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "answer_preview": "department | on_time | n\nBTDT | ONTIME | 14,178\nBTDT | OVERDUE | 40,089\nDISB | ONTIME | 1\nDISB | OVERDUE | 24\nGEN_ | ONTIME | 6,034\nGEN_ | OVERDUE | 1\nINFO | ONTIME | 3,908\nINFO | OVERDUE | 1,196\nISD | ONTIME | 11,604\nISD | OVERDUE | 1,478\nONS_ | ONTIME | 4\nONS_ | OVERDUE | 9\n\nCo",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "M04",
+      "answer": {
+        "answer": "The data does not record this. I could not answer that reliably (BinderException).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": true,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "M04",
+        "persona": "manager",
+        "route": "aggregate",
+        "pass": false,
+        "why": "count gold=3537 miss",
+        "citation_ok": false,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": false,
+        "is_counting": true,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "rag.engine",
+        "answer_preview": "The data does not record this. I could not answer that reliably (BinderException).",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "M05",
+      "answer": {
+        "answer": "count(*)\n7,041\n\nComputed over svc311.",
+        "sql": "SELECT count(*) FROM svc311 WHERE neighborhood IN ('Allston', 'Brighton', 'Allston-Brighton')\nLIMIT 200",
+        "citations": [
+          {
+            "dataset": "svc311",
+            "locator": null,
+            "kind": "sql",
+            "row_count": null,
+            "note": "'allston / brighton' covers 2 neighborhoods (Allston, Brighton); reporting both"
+          },
+          {
+            "dataset": "semantic_layer (supplement)",
+            "locator": "open-space-by-neighborhood",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "rule-9",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "example-9",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "svc311",
+          "semantic_layer (supplement)#open-space-by-neighborhood",
+          "semantic_layer#rule-9",
+          "semantic_layer#example-9"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "M05",
+        "persona": "manager",
+        "route": "aggregate",
+        "pass": false,
+        "why": "count gold=7005 miss",
+        "citation_ok": true,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": false,
+        "is_counting": true,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "rag.engine",
+        "answer_preview": "count(*)\n7,041\n\nComputed over svc311.",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "M06",
+      "answer": {
+        "answer": "The provided context does not contain information about restaurants in Chinatown or their food quality. Therefore, I cannot answer this question based on the given data.\n\nReference(s):\nNone provided in the context.",
+        "sql": null,
+        "citations": [
+          {
+            "dataset": "311_crm_value_codes.pdf",
+            "locator": "QUEUE",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "311_data_dictionary.pdf",
+            "locator": "Case Status",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "311_crm_value_codes.pdf",
+            "locator": "QUEUE",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "property-field-definitions",
+            "locator": "gross_tax",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "311_data_dictionary.pdf",
+            "locator": "Report Source",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "311_crm_value_codes.pdf#QUEUE",
+          "311_data_dictionary.pdf#Case Status",
+          "311_crm_value_codes.pdf#QUEUE",
+          "property-field-definitions#gross_tax",
+          "311_data_dictionary.pdf#Report Source"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "M06",
+        "persona": "manager",
+        "route": "unanswerable",
+        "pass": true,
+        "why": "abstain",
+        "citation_ok": true,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": true,
+        "schema_grounding": false,
+        "engine": "rag.engine",
+        "answer_preview": "The provided context does not contain information about restaurants in Chinatown or their food quality. Therefore, I cannot answer this question based on the given data.\n\nReference(s):\nNone provided in the context.",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "M07",
+      "answer": {
+        "answer": "Based on the provided context, the worst on-time rates for 311 service requests can be determined by looking at the \"ONTIME\" field in the [311_crm_value_codes.pdf] and [311_data_dictionary.pdf]. However, the context does not provide specific on-time rates for each neighborhood. It only mentions potential redundancies and missing values within this field. To find the worst on-time rates, you would need to analyze the data directly, as this information is not explicitly stated in the provided context.",
+        "sql": null,
+        "citations": [
+          {
+            "dataset": "service_requests-field-definitions",
+            "locator": "on_time",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "311_crm_value_codes.pdf",
+            "locator": "QUEUE",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "311_data_dictionary.pdf",
+            "locator": "Neighborhood",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "311_data_dictionary.pdf",
+            "locator": "On Time?",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "crime-field-definitions",
+            "locator": "UCR_PART",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "service_requests-field-definitions#on_time",
+          "311_crm_value_codes.pdf#QUEUE",
+          "311_data_dictionary.pdf#Neighborhood",
+          "311_data_dictionary.pdf#On Time?",
+          "crime-field-definitions#UCR_PART"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "M07",
+        "persona": "manager",
+        "route": "aggregate",
+        "pass": false,
+        "why": "rank miss",
+        "citation_ok": true,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "answer_preview": "Based on the provided context, the worst on-time rates for 311 service requests can be determined by looking at the \"ONTIME\" field in the [311_crm_value_codes.pdf] and [311_data_dictionary.pdf]. However, the context does not provide specific on-time rates for each neighborhood. I",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "M08",
+      "answer": {
+        "answer": "The data does not record this. These datasets record codes, dispositions and counts, not causes or opinions.",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": true,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "M08",
+        "persona": "manager",
+        "route": "unanswerable",
+        "pass": true,
+        "why": "abstain",
+        "citation_ok": true,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": true,
+        "schema_grounding": false,
+        "engine": "rag.engine",
+        "answer_preview": "The data does not record this. These datasets record codes, dispositions and counts, not causes or opinions.",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "T01",
+      "answer": {
+        "answer": "count(*)\n0\n\nComputed over crime_only for 2024.",
+        "sql": "SELECT count(*) FROM crime_only WHERE neighborhood = 'B2' AND year = 2024\nLIMIT 200",
+        "citations": [
+          {
+            "dataset": "crime_only",
+            "locator": null,
+            "kind": "sql",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "example-1",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "crime",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "semantic_layer",
+            "locator": "example-3",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "crime_only",
+          "semantic_layer#example-1",
+          "semantic_layer#crime",
+          "semantic_layer#example-3"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "T01",
+        "persona": "resident",
+        "route": "aggregate",
+        "pass": false,
+        "why": "count gold=7957 miss",
+        "citation_ok": true,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": false,
+        "is_counting": true,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "rag.engine",
+        "answer_preview": "count(*)\n0\n\nComputed over crime_only for 2024.",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "T02",
+      "answer": {
+        "answer": "The term 'viol_level' is not defined in the provided field definitions. Therefore, I cannot provide a definition for 'viol_level *'.",
+        "sql": null,
+        "citations": [
+          {
+            "dataset": "food-field-definitions",
+            "locator": "violdesc",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "crime_field_explanation.xlsx",
+            "locator": "[district] [varchar](10) NULL,",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "311_crm_value_codes.pdf",
+            "locator": "QUEUE",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          },
+          {
+            "dataset": "crime_field_explanation.xlsx",
+            "locator": "[Offense_Description][varchar](80) NULL,",
+            "kind": "document",
+            "row_count": null,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "food-field-definitions#violdesc",
+          "crime_field_explanation.xlsx#[district] [varchar](10) NULL,",
+          "311_crm_value_codes.pdf#QUEUE",
+          "crime_field_explanation.xlsx#[Offense_Description][varchar](80) NULL,"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "T02",
+        "persona": "manager",
+        "route": "unanswerable",
+        "pass": false,
+        "why": "expected abstention",
+        "citation_ok": true,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": true,
+        "schema_grounding": false,
+        "engine": "rag.engine",
+        "answer_preview": "The term 'viol_level' is not defined in the provided field definitions. Therefore, I cannot provide a definition for 'viol_level *'.",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "T03",
+      "answer": {
+        "answer": "That asks for a judgment I will not make for you. Here is what the data does say:\n\n- crime incidents: 15,979 in Roxbury (no time window (all available years))\n- 311 requests: 6,101 in Roxbury (no time window (all available years))",
+        "sql": null,
+        "citations": [
+          {
+            "dataset": "crime_only",
+            "locator": null,
+            "kind": "sql",
+            "row_count": 15979,
+            "note": "crime_only excludes non-crime police activity"
+          },
+          {
+            "dataset": "svc311",
+            "locator": null,
+            "kind": "sql",
+            "row_count": 6101,
+            "note": null
+          }
+        ],
+        "retrieved_ids": [
+          "crime_only",
+          "svc311"
+        ],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": false,
+        "refused_value_judgment": true
+      },
+      "score": {
+        "id": "T03",
+        "persona": "resident",
+        "route": "value_judgment",
+        "pass": true,
+        "why": "value-judgment refuse+metrics",
+        "citation_ok": true,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "rag.engine",
+        "answer_preview": "That asks for a judgment I will not make for you. Here is what the data does say:\n\n- crime incidents: 15,979 in Roxbury (no time window (all available years))\n- 311 requests: 6,101 in Roxbury (no time window (all available years))",
+        "label": "ours",
+        "schema_flag": true
+      }
+    },
+    {
+      "id": "T04",
+      "answer": {
+        "answer": "The data does not record this. I could not answer that reliably (BinderException).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "abstained": true,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "T04",
+        "persona": "manager",
+        "route": "aggregate",
+        "pass": false,
+        "why": "count gold=0 miss",
+        "citation_ok": false,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": false,
+        "is_counting": true,
+        "must_abstain": false,
+        "schema_grounding": true,
+        "engine": "rag.engine",
+        "answer_preview": "The data does not record this. I could not answer that reliably (BinderException).",
+        "label": "ours",
+        "schema_flag": true
+      }
+    }
+  ],
   "naive_summary": {
     "label": "naive",
     "n": 20,
@@ -650,21 +1799,30 @@
   },
   "ours_summary": {
     "label": "ours",
-    "n": 0,
-    "passed": 0,
-    "overall": NaN,
+    "n": 20,
+    "passed": 5,
+    "overall": 0.25,
     "counting_ok": 0,
     "counting_n": 7,
-    "abstain_ok": 0,
+    "abstain_ok": 2,
     "abstain_n": 4,
-    "fabrications": 0,
-    "citation_ok": 0,
+    "fabrications": 5,
+    "citation_ok": 13,
     "citation_n": 16,
-    "hit_at_5": null,
-    "sql_ok": 0,
-    "sql_n": 0,
-    "by_persona": {}
+    "hit_at_5": 0.0,
+    "sql_ok": 1,
+    "sql_n": 4,
+    "by_persona": {
+      "resident": {
+        "n": 10,
+        "pass": 2
+      },
+      "manager": {
+        "n": 10,
+        "pass": 3
+      }
+    }
   },
-  "system": null,
+  "system": "engine",
   "schema_grounding": true
 }

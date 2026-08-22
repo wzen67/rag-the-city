@@ -20,12 +20,20 @@ HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
 
 #: Code-specialised, for text-to-SQL.
 SQL_MODEL = os.environ.get("SQL_MODEL", "qwen2.5-coder:7b")
-#: Instruction-following prose, for grounded answers and classification.
-CHAT_MODEL = os.environ.get("CHAT_MODEL", "granite3.1-dense:8b")
+#: Prose answers. Defaults to the SAME model as SQL on purpose: holding two
+#: 5 GB generation models resident costs ~10 GB, and on a memory-constrained
+#: machine Ollama evicts and reloads between calls, which turned a 2 s
+#: generation into 40 s. One model means no swapping. Set CHAT_MODEL to
+#: granite3.1-dense:8b if there is headroom — it writes better prose.
+CHAT_MODEL = os.environ.get("CHAT_MODEL", SQL_MODEL)
 #: Multilingual, 1024-dim. Boston's 311 text is not only English.
 EMBED_MODEL = os.environ.get("EMBED_MODEL", "bge-m3")
 
 TIMEOUT = int(os.environ.get("OLLAMA_TIMEOUT", "300"))
+
+#: Ollama unloads a model after 5 minutes by default, so the first question
+#: after a pause pays a full cold load. Hold them for the length of a demo.
+KEEP_ALIVE = os.environ.get("OLLAMA_KEEP_ALIVE", "30m")
 
 
 class OllamaUnavailable(RuntimeError):
@@ -52,7 +60,8 @@ def embed(texts: list[str], model: str = EMBED_MODEL, batch_size: int = 64) -> l
     out: list[list[float]] = []
     for i in range(0, len(texts), batch_size):
         chunk = texts[i : i + batch_size]
-        data = _post("/api/embed", {"model": model, "input": chunk})
+        data = _post("/api/embed",
+                     {"model": model, "input": chunk, "keep_alive": KEEP_ALIVE})
         vecs = data.get("embeddings")
         if not vecs or len(vecs) != len(chunk):
             raise OllamaUnavailable(
@@ -66,7 +75,7 @@ def embed(texts: list[str], model: str = EMBED_MODEL, batch_size: int = 64) -> l
 #: quoted definition — and an uncapped 8B model will happily continue the
 #: prompt pattern and invent a follow-up Q&A turn. Capping is both a
 #: latency fix and a correctness one.
-MAX_TOKENS = 400
+MAX_TOKENS = 320
 
 #: Anything after these means the model has started a new turn on its own.
 _RUNAWAY = ("\nQuestion:", "\nQ:", "\nUser:", "\nContext:")
@@ -95,6 +104,7 @@ def generate(
         "model": model,
         "prompt": prompt,
         "stream": False,
+        "keep_alive": KEEP_ALIVE,
         "options": {
             "temperature": temperature,
             "num_predict": max_tokens,
