@@ -159,6 +159,54 @@ def get(key: str) -> Dataset:
     return REGISTRY[key]
 
 
+REPO_ROOT = DATA_DIR.parent
+VIEWS_SQL = REPO_ROOT / "sql" / "views.sql"
+
+#: The view names Role A's script defines. This is the integration
+#: contract between the SQL layer and everything downstream.
+VIEWS = (
+    "neighborhoods",
+    "crime",
+    "crime_only",
+    "svc311",
+    "food_inspections",
+    "food_violations",
+    "property",
+    "property_homes",
+    "licenses",
+    "entertainment_licenses",
+    "open_space",
+)
+
+
+def connect_views() -> "duckdb.DuckDBPyConnection":
+    """Build a connection with Role A's cleaned views from sql/views.sql.
+
+    Prefer this over ``connect()``: the views handle every known data trap
+    internally — the empty crime classification columns, non-crime rows,
+    the parkland undercount, the VARCHAR money columns — so querying them
+    gives correct numbers by default.
+
+    The script uses paths relative to the repo root, so we run it from
+    there regardless of the caller's working directory.
+    """
+    import os
+
+    import duckdb
+
+    if not VIEWS_SQL.exists():
+        raise FileNotFoundError(f"{VIEWS_SQL} not found; run from a full checkout")
+
+    con = duckdb.connect()
+    prev = os.getcwd()
+    try:
+        os.chdir(REPO_ROOT)
+        con.execute(VIEWS_SQL.read_text(encoding="utf-8"))
+    finally:
+        os.chdir(prev)
+    return con
+
+
 def connect(keys: list[str] | None = None) -> "duckdb.DuckDBPyConnection":
     """Return a connection with one view per dataset, named by key.
 

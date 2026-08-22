@@ -94,6 +94,7 @@ _AGGREGATE = (
     r"\bhow many\b",
     r"\bhow much\b",
     r"\bhow long\b",
+    r"\bhow (expensive|often|frequently|quickly|fast)\b",
     r"\bcount of\b",
     r"\b(total|sum|average|mean|median|percentage|percent|rate|share)\b",
     r"\b(most|least|top|fewest|highest|lowest|busiest|slowest|fastest)\b",
@@ -101,6 +102,13 @@ _AGGREGATE = (
     r"\b(more|fewer|less) \w+ than\b",
     r"\bcompared? (to|with)\b",
     r"\bbreakdown\b",
+    # A named metric is a number even without a counting verb: "typical home
+    # value in Dorchester" and "what is the crime rate" are aggregates, and
+    # were falling through to qualitative retrieval.
+    r"\b(typical|usual|going rate)\b",
+    r"\b(home|house|property|assessed) (value|price|cost)s?\b",
+    r"\b(response|closure|resolution|crime|violation|inspection) (time|rate|count)s?\b",
+    r"\bwhat (?:is|are|was|were) the\b.*\b(value|price|cost|time|rate|count|number|acres)\b",
 )
 
 _SCORECARD = (

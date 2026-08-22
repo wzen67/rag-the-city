@@ -22,7 +22,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from . import datasets, llm
+from . import datasets, llm, semantic
 from .retrieval import Document, Scored
 
 #: Statements that must never come out of a generated query.
@@ -76,7 +76,7 @@ def category_values(dataset_key: str, column: str, con=None) -> list[str]:
         return _CATEGORY_CACHE[ck]
 
     own = con is None
-    con = con or datasets.connect([dataset_key])
+    con = con or datasets.connect_views()
     try:
         rows = con.sql(
             f'SELECT "{column}" FROM {dataset_key} '
@@ -94,18 +94,41 @@ def category_values(dataset_key: str, column: str, con=None) -> list[str]:
     return out
 
 
-def warm_category_cache(con=None) -> int:
-    """Pre-compute every declared categorical. Call once at startup.
+#: Column names that are categorical in Role A's views. Used when the
+#: queried name is a view rather than a registry key.
+_VIEW_CATEGORICAL_NAMES = frozenset(
+    {
+        "neighborhood", "is_crime", "is_open", "on_time", "case_status",
+        "offense_category", "shooting", "year", "space_type", "ownership",
+        "result", "viol_level", "lu_desc", "own_occ", "department", "reason",
+        "license_category", "status",
+    }
+)
 
-    Keeps the first user question from paying the scan cost mid-demo.
+
+def _view_categoricals(view: str, columns: list[str]) -> tuple[str, ...]:
+    """Guess which of a view's columns are worth enumerating."""
+    return tuple(c for c in columns if c.casefold() in _VIEW_CATEGORICAL_NAMES)
+
+
+def warm_category_cache(con=None) -> int:
+    """Pre-compute every categorical we might enumerate. Call once.
+
+    Keeps the first user question from paying the scan cost mid-demo —
+    which on the 896k-row inspections file is the difference between a
+    snappy answer and a judge watching a spinner.
     """
     own = con is None
-    con = con or datasets.connect()
+    con = con or datasets.connect_views()
     try:
         n = 0
-        for key, ds in datasets.REGISTRY.items():
-            for col in ds.categoricals:
-                category_values(key, col, con)
+        for view in datasets.VIEWS:
+            try:
+                cols = con.sql(f"SELECT * FROM {view} LIMIT 0").columns
+            except Exception:
+                continue
+            for col in _view_categoricals(view, cols):
+                category_values(view, col, con)
                 n += 1
         return n
     finally:
@@ -131,14 +154,15 @@ def column_summary(
             the measured benefit.
         include_values: Enumerate declared low-cardinality columns.
     """
-    ds = datasets.get(dataset_key)
+    ds = datasets.REGISTRY.get(dataset_key)
     own = con is None
-    con = con or datasets.connect([dataset_key])
+    con = con or datasets.connect_views()
     try:
         rel = con.sql(f"SELECT * FROM {dataset_key} LIMIT 0")
         lines = [f"{name} {dtype}" for name, dtype in zip(rel.columns, rel.types)]
+        cats = ds.categoricals if ds else _view_categoricals(dataset_key, rel.columns)
         values = (
-            {c: category_values(dataset_key, c, con) for c in ds.categoricals}
+            {c: category_values(dataset_key, c, con) for c in cats}
             if include_values
             else {}
         )
@@ -146,10 +170,12 @@ def column_summary(
         if own:
             con.close()
 
-    out = [f"-- view: {dataset_key}  (one row = {ds.grain})"]
-    if include_notes and ds.note:
+    grain = ds.grain if ds else "one record"
+    out = [f"-- view: {dataset_key}  (one row = {grain})"]
+    if include_notes and ds and ds.note:
         out += [f"-- CAUTION: {w}" for w in _wrap(ds.note, 96)]
-    out.append(f"-- geography columns: {ds.geography}")
+    if ds:
+        out.append(f"-- geography columns: {ds.geography}")
     out += lines
     for col, vals in values.items():
         if vals:
@@ -175,6 +201,7 @@ def build_prompt(
     dataset_key: str,
     grounding: list[Scored] | None = None,
     include_notes: bool = True,
+    con=None,
 ) -> str:
     """Assemble a SQL-generation prompt.
 
@@ -187,11 +214,20 @@ def build_prompt(
             relevant fields. Omitting these is the "without" arm of the
             A/B measurement.
     """
+    # The semantic layer is authoritative where it covers the table: it is
+    # generated from the views, carries the rules, and ships worked
+    # question -> SQL examples. Fall back to live introspection otherwise.
+    described = semantic.load().table(dataset_key) is not None
+    schema_block = (
+        semantic.prompt_block(dataset_key)
+        if described and include_notes
+        else column_summary(dataset_key, con=con, include_notes=include_notes)
+    )
     parts = [
         "You write DuckDB SQL. Output ONLY the query, no prose, no markdown fence.",
-        f"Query the view named `{dataset_key}` directly, e.g. FROM {dataset_key}.",
+        f"Query the table named `{dataset_key}` directly, e.g. FROM {dataset_key}.",
         "",
-        column_summary(dataset_key, include_notes=include_notes),
+        schema_block,
     ]
     if grounding:
         parts += ["", "-- Field definitions retrieved from the official data dictionaries:"]
@@ -248,9 +284,25 @@ def generate_sql(
     grounding: list[Scored] | None = None,
     model: str = llm.SQL_MODEL,
     include_notes: bool = True,
+    con=None,
+    window=None,
 ) -> SQLPlan:
-    """Generate and validate SQL. Does not execute it."""
-    prompt = build_prompt(question, dataset_key, grounding, include_notes)
+    """Generate and validate SQL. Does not execute it.
+
+    Args:
+        con: Connection used to introspect columns. Pass the engine's
+            connection so the prompt describes Role A's cleaned views
+            rather than raw files.
+        window: A ``temporal.Window``. When bounded, the prompt is told
+            the window explicitly instead of leaving the model to invent
+            a date filter.
+    """
+    prompt = build_prompt(question, dataset_key, grounding, include_notes, con=con)
+    if window is not None and getattr(window, "is_bounded", False):
+        prompt = prompt.replace(
+            "Question:",
+            f"Restrict results to {window.describe()}.\nQuestion:",
+        )
     raw = llm.generate(prompt, model=model)
     return SQLPlan(
         sql=sanitize(raw),
@@ -274,6 +326,85 @@ def execute(plan: SQLPlan, con=None) -> tuple[list[str], list[tuple]]:
     finally:
         if own:
             con.close()
+
+
+def view_grounding_documents() -> list[Document]:
+    """Field semantics written against Role A's cleaned views.
+
+    Kept separate from ``reference_documents()`` because the two serve
+    opposite purposes. The published data dictionaries describe the *raw
+    files* — they say ``OCCURRED_ON_DATE``, ``UCR_PART``,
+    ``location_zipcode``. The views rename, derive and filter. Injecting
+    raw-file names into SQL generation produces queries that do not bind,
+    so SQL grounding draws only from this set.
+    """
+    facts = [
+        (
+            "crime_only",
+            "crime_class",
+            "crime_only already excludes non-crime police activity (SICK ASSIST, "
+            "INVESTIGATE PERSON, SERVICE TO OTHER AGENCY): 146,933 of 290,130 raw "
+            "rows survive. Do NOT add your own is_crime filter. crime_class "
+            "separates violent from property crime. Columns are lowercase: "
+            "occurred_on, year, month, hour, neighborhood, shooting, street.",
+        ),
+        (
+            "svc311",
+            "hours_to_close",
+            "svc311 exposes hours_to_close (NULL while a case is open) and the "
+            "boolean is_open. Use hours_to_close directly for resolution time "
+            "rather than subtracting timestamps, and it is already NULL for open "
+            "cases so AVG skips them. neighborhood is assigned by point-in-polygon, "
+            "not the raw 311 label.",
+        ),
+        (
+            "svc311",
+            "on_time",
+            "on_time is a compliance flag with values ONTIME and OVERDUE, not a "
+            "duration. For elapsed time use hours_to_close.",
+        ),
+        (
+            "property_homes",
+            "total_value",
+            "property_homes is already filtered to residential parcels (137,224 of "
+            "184,552). Assessed values are numeric in this view — no comma "
+            "stripping needed. Do not re-filter on lu_desc.",
+        ),
+        (
+            "open_space",
+            "acres",
+            "open_space contains ONLY parks and open space — every one of its 577 "
+            "rows is already parkland. For a total, use SUM(acres) with NO WHERE "
+            "clause; filtering on ownership or space_type LIKE '%park%' matches "
+            "almost nothing and returns NULL. acres is DOUBLE. neighborhood is "
+            "not present; use source_district or zipcode.",
+        ),
+        (
+            "food_violations",
+            "viol_level",
+            "food_violations is one row per violation line (896,379); "
+            "food_inspections is one row per inspection (219,732). Count "
+            "inspections from food_inspections, violations from food_violations, "
+            "or the numbers double-count.",
+        ),
+        (
+            "all",
+            "neighborhood",
+            "neighborhood is one of the 26 BPDA names, assigned by point-in-polygon "
+            "on latitude/longitude. Match it exactly, e.g. 'Dorchester', "
+            "'South Boston Waterfront'. It is NULL where coordinates are missing.",
+        ),
+    ]
+    return [
+        Document(
+            id=f"view-{view}-{field}".lower(),
+            text=f"{field} in view {view}: {body}",
+            dataset=f"{view} (cleaned view)",
+            locator=field,
+            kind="document",
+        )
+        for view, field, body in facts
+    ]
 
 
 def reference_documents() -> list[Document]:

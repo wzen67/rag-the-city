@@ -3,6 +3,41 @@
 Numbers come from SQL over every row. **Retrieval's job is to make that SQL
 correct**, not to replace it.
 
+## Quick start
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+python scripts/build_db.py          # materialise boston.db (~1 min, 103 MB)
+ollama pull qwen2.5-coder:7b && ollama pull granite3.1-dense:8b && ollama pull bge-m3
+python scripts/smoke_engine.py      # one question per route
+./run_mcp.sh                        # serve ask/query over MCP on :3000
+```
+
+Ask a question in Python:
+
+```python
+from rag import engine
+eng = engine.Engine().prepare()
+print(eng.ask("How many crimes were there in Roxbury in 2025?").render())
+```
+
+## How this sits on top of the data layer
+
+| Their layer | How `rag/` uses it |
+|---|---|
+| `sql/views.sql` -> `boston.db` | queried by name; routes pick `crime_only`, `food_inspections`, `property_homes` per the semantic-layer rules |
+| `scripts/query.py` | **the only execution path** (`rag/db.py`). Read-only, external file access disabled, table allowlist. |
+| `sql/semantic_layer.json` | **the SQL-grounding corpus** (`rag/semantic.py`): 12 tables, 11 rules, 10 worked question->SQL examples used as few-shot pairs |
+| `data/reference/chunks.jsonl` | the definition/lookup corpus — kept *separate* from SQL grounding, see below |
+| `mcp_server.py` | now also exposes `ask`, `query` and `semantic_rules` |
+
+**Why two grounding corpora.** The parsed data dictionaries describe the *raw
+files* (`OCCURRED_ON_DATE`, `UCR_PART`); the cleaned tables rename and derive
+columns (`occurred_on`, `crime_class`). Feeding the dictionaries into SQL
+generation produced queries that would not bind, so `Engine.sql_grounding`
+draws only from the semantic layer while `Engine.retriever` keeps everything
+for definition and lookup questions.
+
 ## Modules
 
 | Module | Purpose |
