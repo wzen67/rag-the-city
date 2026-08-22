@@ -164,6 +164,50 @@ def load_reference_chunks() -> list[retrieval.Document]:
     return docs
 
 
+def plan(question: str) -> dict:
+    """Run the fast stages only, without answering. No model, no SQL.
+
+    Stages 0-3 are pure regex and lookups, so they return in under a
+    millisecond, while stage 4 costs an LLM call and a scan. Splitting
+    them lets a UI show *how* the question was narrowed the instant it is
+    submitted, rather than leaving a spinner with nothing behind it.
+    """
+    verdict = guardrails.screen(question)
+    hoods = neighborhoods.find_in_question(question)
+    window = temporal.extract(question)
+    rule_block = semantic.unanswerable_by_rule(question)
+    decision = classify(question)
+
+    if verdict.blocked:
+        outcome, detail = "blocked", verdict.risk.value
+    elif rule_block:
+        outcome, detail = "unanswerable", rule_block
+    else:
+        outcome, detail = decision.route.value, ", ".join(decision.matched) or "fallback"
+
+    subject = pick_subject(question, decision)
+    return {
+        "question": question,
+        "outcome": outcome,
+        "route": decision.route.value,
+        "detail": detail,
+        "neighborhoods": list(hoods),
+        "ambiguity": _ambiguity_note(question, hoods),
+        "window": window.describe(),
+        "window_warning": temporal.out_of_range(window),
+        "table": VIEW_FOR_ROUTE.get(subject) if outcome in ("aggregate", "scorecard") else None,
+        "will_call_model": outcome in ("aggregate", "scorecard", "definition", "lookup"),
+        "stages": [
+            {"stage": "guard", "detail": "blocked: " + verdict.risk.value if verdict.blocked
+                                        else "no person-directed lookup"},
+            {"stage": "disambiguate", "detail": ", ".join(hoods) or "no neighborhood named"},
+            {"stage": "anchor", "detail": window.describe()},
+            {"stage": "rules", "detail": rule_block or "no blocking rule"},
+            {"stage": "route", "detail": f"{decision.route.value} ({detail})"},
+        ],
+    }
+
+
 def ask(
     question: str,
     con=None,

@@ -191,3 +191,41 @@ class TestScalarAggregateDetection:
 
     def test_multiple_rows_is_never_scalar(self):
         assert not engine._is_scalar_aggregate("SELECT COUNT(*) FROM x", ["c"], [(1,), (2,)])
+
+
+class TestPlan:
+    """plan() runs the fast stages only — it must never call a model."""
+
+    def test_returns_all_five_fast_stages(self):
+        p = engine.plan("How many crimes in Roxbury in 2025?")
+        assert [s["stage"] for s in p["stages"]] == [
+            "guard", "disambiguate", "anchor", "rules", "route",
+        ]
+
+    def test_is_fast_enough_to_render_synchronously(self):
+        import time
+
+        engine.plan("warm up the regexes")
+        t = time.perf_counter()
+        engine.plan("How many crimes in Roxbury in 2025?")
+        assert (time.perf_counter() - t) < 0.1
+
+    def test_reports_the_table_a_numeric_question_will_hit(self):
+        p = engine.plan("How many crimes in Roxbury in 2025?")
+        assert p["table"] == "crime_only"
+        assert p["will_call_model"] is True
+
+    def test_blocked_question_needs_no_model(self):
+        p = engine.plan("Where does John Smith live?")
+        assert p["outcome"] == "blocked"
+        assert p["will_call_model"] is False
+
+    def test_rule_blocked_question_needs_no_model(self):
+        p = engine.plan("How many 311 complaints this year compared to last year?")
+        assert p["outcome"] == "unanswerable"
+        assert p["will_call_model"] is False
+
+    def test_extracts_window_and_neighborhood(self):
+        p = engine.plan("crimes in Dorchester in 2025")
+        assert p["window"] == "2025"
+        assert p["neighborhoods"] == ["Dorchester"]
