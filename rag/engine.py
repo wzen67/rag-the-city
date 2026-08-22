@@ -119,14 +119,15 @@ class Engine:
         self._ready = True
         return self
 
-    def ask(self, question: str) -> Answer:
+    def ask(self, question: str, schema_grounding: bool = True) -> Answer:
         if not self._ready:
             self.prepare()
         return ask(
             question,
             con=self.con,
             retriever=self.retriever,
-            sql_grounding=self.sql_grounding,
+            sql_grounding=self.sql_grounding if schema_grounding else None,
+            schema_grounding=schema_grounding,
         )
 
 
@@ -168,8 +169,13 @@ def ask(
     con=None,
     retriever: retrieval.HybridRetriever | None = None,
     sql_grounding: retrieval.HybridRetriever | None = None,
+    schema_grounding: bool = True,
 ) -> Answer:
     """Answer one question. Never raises; degrades to an abstention.
+
+    ``schema_grounding=False`` is the control arm of the grounding
+    measurement: the SQL prompt loses the semantic layer's rules, worked
+    examples and column notes, so the comparison is honest.
 
     This is the function the eval harness and any UI should call.
     """
@@ -209,7 +215,8 @@ def ask(
     try:
         answer = _execute(
             question, decision, window, hoods, caveats, con, retriever,
-            sql_grounding or retriever, trace,
+            sql_grounding if schema_grounding else None, trace,
+            schema_grounding,
         )
     except Exception as exc:  # a crash in front of judges is the worst outcome
         trace.append(("execute", f"failed: {type(exc).__name__}"))
@@ -250,6 +257,7 @@ def _execute(
     retriever,
     sql_grounding,
     trace: list[tuple[str, str]],
+    schema_grounding: bool = True,
 ) -> Answer:
     route = decision.route
 
@@ -269,7 +277,10 @@ def _execute(
 
     # SCORECARD and AGGREGATE both resolve to numbers from SQL.
     if route in (Route.AGGREGATE, Route.SCORECARD):
-        return _answer_with_sql(question, decision, window, con, sql_grounding, trace, caveats)
+        return _answer_with_sql(
+            question, decision, window, con, sql_grounding, trace, caveats,
+            schema_grounding,
+        )
 
     return _answer_lookup(question, retriever, trace)
 
@@ -326,7 +337,10 @@ def _answer_value_judgment(question, decision, window, hoods, con, retriever, tr
     return decline_judgment("\n".join(metrics), citations)
 
 
-def _answer_with_sql(question, decision, window, con, retriever, trace, caveats) -> Answer:
+def _answer_with_sql(
+    question, decision, window, con, retriever, trace, caveats,
+    schema_grounding: bool = True,
+) -> Answer:
     """Numbers come from SQL, grounded by retrieved field definitions."""
     subject = pick_subject(question, decision)
     view = VIEW_FOR_ROUTE[subject]
@@ -341,7 +355,10 @@ def _answer_with_sql(question, decision, window, con, retriever, trace, caveats)
     if grounding:
         trace.append(("ground", f"injected {len(grounding)} field definitions into the SQL prompt"))
 
-    plan = schema.generate_sql(question, view, grounding, con=con, window=window)
+    plan = schema.generate_sql(
+        question, view, grounding, con=con, window=window,
+        include_notes=schema_grounding,
+    )
     # Execute through scripts/query.py: read-only, no external access, table
     # allowlist. A query that reaches for a raw CSV errors here instead of
     # quietly returning a wrong number.
