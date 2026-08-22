@@ -1,0 +1,735 @@
+{
+  "tables": [
+    {
+      "name": "crime_only",
+      "rows": 146933,
+      "meaning": "Crime incidents that are actually crimes. **Default for any question about crime.** Non-offences (medical assists, traffic accidents, sudden deaths, fire reports, investigations) are already excluded.",
+      "columns": [
+        {
+          "name": "incident_number",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "offense_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "offense_description",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "crime_class",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "is_crime",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "occurred_on",
+          "type": "TIMESTAMP WITH TIME ZONE"
+        },
+        {
+          "name": "year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "month",
+          "type": "BIGINT"
+        },
+        {
+          "name": "day_of_week",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "hour",
+          "type": "BIGINT"
+        },
+        {
+          "name": "shooting",
+          "type": "BIGINT"
+        },
+        {
+          "name": "street",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "latitude",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "longitude",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "neighborhood",
+          "type": "VARCHAR"
+        }
+      ]
+    },
+    {
+      "name": "crime",
+      "rows": 290130,
+      "meaning": "All 290,130 police incident reports, including non-crimes. Use only when the question is explicitly about police activity or reports rather than crime, or to contrast naive vs corrected counts.",
+      "columns": [
+        {
+          "name": "incident_number",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "offense_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "offense_description",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "crime_class",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "is_crime",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "occurred_on",
+          "type": "TIMESTAMP WITH TIME ZONE"
+        },
+        {
+          "name": "year",
+          "type": "BIGINT"
+        },
+        {
+          "name": "month",
+          "type": "BIGINT"
+        },
+        {
+          "name": "day_of_week",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "hour",
+          "type": "BIGINT"
+        },
+        {
+          "name": "shooting",
+          "type": "BIGINT"
+        },
+        {
+          "name": "street",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "latitude",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "longitude",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "neighborhood",
+          "type": "VARCHAR"
+        }
+      ]
+    },
+    {
+      "name": "svc311",
+      "rows": 78526,
+      "meaning": "311 service requests, 2026 only (Jan 1 - Aug 20). Responsiveness, complaint themes, department performance.",
+      "columns": [
+        {
+          "name": "case_enquiry_id",
+          "type": "BIGINT"
+        },
+        {
+          "name": "open_dt",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "closed_dt",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "case_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "on_time",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "case_title",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "subject",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "reason",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "type",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "department",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "queue",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "closure_reason",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "zipcode",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "latitude",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "longitude",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "neighborhood",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "is_open",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "hours_to_close",
+          "type": "BIGINT"
+        }
+      ]
+    },
+    {
+      "name": "food_inspections",
+      "rows": 219732,
+      "meaning": "One row per actual restaurant inspection. **Use for any rate or count of inspections.**",
+      "columns": [
+        {
+          "name": "license_no",
+          "type": "BIGINT"
+        },
+        {
+          "name": "business_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "inspected_at",
+          "type": "TIMESTAMP WITH TIME ZONE"
+        },
+        {
+          "name": "result",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "license_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "address",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "city",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "zip",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "latitude",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "longitude",
+          "type": "DOUBLE"
+        }
+      ]
+    },
+    {
+      "name": "food_violations",
+      "rows": 896379,
+      "meaning": "One row per violation found. Use only when asking about violations themselves. Never count these as inspections.",
+      "columns": [
+        {
+          "name": "business_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "dba_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "license_no",
+          "type": "BIGINT"
+        },
+        {
+          "name": "license_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "result",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "inspected_at",
+          "type": "TIMESTAMP WITH TIME ZONE"
+        },
+        {
+          "name": "violation_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "violation_level",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "violation_description",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "violation_status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "comments",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "address",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "city",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "zip",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "latitude",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "longitude",
+          "type": "DOUBLE"
+        }
+      ]
+    },
+    {
+      "name": "property_homes",
+      "rows": 137224,
+      "meaning": "Residential properties with a real assessed value. **Default for any question about home or property value.** Parking spaces, unusable land and zero-value parcels are already excluded.",
+      "columns": [
+        {
+          "name": "pid",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "gis_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "zipcode",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "land_use",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "land_use_desc",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "owner_occupied",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "owner",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "street_address",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "year_built",
+          "type": "BIGINT"
+        },
+        {
+          "name": "res_units",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bedrooms",
+          "type": "BIGINT"
+        },
+        {
+          "name": "full_baths",
+          "type": "BIGINT"
+        },
+        {
+          "name": "total_value",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "land_value",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "bldg_value",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "gross_tax",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "land_sf",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "is_residential",
+          "type": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "name": "property",
+      "rows": 184552,
+      "meaning": "All 184,552 assessed parcels including parking spaces and land. Use only for total-stock questions, never for typical home value.",
+      "columns": [
+        {
+          "name": "pid",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "gis_id",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "zipcode",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "land_use",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "land_use_desc",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "owner_occupied",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "owner",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "street_address",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "year_built",
+          "type": "BIGINT"
+        },
+        {
+          "name": "res_units",
+          "type": "BIGINT"
+        },
+        {
+          "name": "bedrooms",
+          "type": "BIGINT"
+        },
+        {
+          "name": "full_baths",
+          "type": "BIGINT"
+        },
+        {
+          "name": "total_value",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "land_value",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "bldg_value",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "gross_tax",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "land_sf",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "is_residential",
+          "type": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "name": "licenses",
+      "rows": 3659,
+      "meaning": "Currently active liquor / common victualler licences, with capacity and opening hours. Contains no history.",
+      "columns": [
+        {
+          "name": "license_num",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "license_category",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "license_type",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "business_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "dba_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "expires",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "capacity",
+          "type": "INTEGER"
+        },
+        {
+          "name": "opening",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "closing",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "premises_description",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "comments",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "address",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "city",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "zipcode",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "neighborhood",
+          "type": "VARCHAR"
+        }
+      ]
+    },
+    {
+      "name": "entertainment_licenses",
+      "rows": 1246,
+      "meaning": "Currently active entertainment licences (live music, night clubs). Contains no history.",
+      "columns": [
+        {
+          "name": "license_num",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "license_type",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "business_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "dba_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "expires",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "comments",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "address",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "city",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "zipcode",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "neighborhood",
+          "type": "VARCHAR"
+        }
+      ]
+    },
+    {
+      "name": "open_space",
+      "rows": 272,
+      "meaning": "Parks and green space. Joins by zipcode only - it has no coordinates.",
+      "columns": [
+        {
+          "name": "site_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "ownership",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "space_type",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "acres",
+          "type": "DOUBLE"
+        },
+        {
+          "name": "address",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "zipcode",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_district",
+          "type": "VARCHAR"
+        }
+      ]
+    },
+    {
+      "name": "neighborhoods",
+      "rows": 26,
+      "meaning": "The 26 canonical neighborhood polygons. Join key for everything else.",
+      "columns": [
+        {
+          "name": "neighborhood",
+          "type": "VARCHAR"
+        }
+      ]
+    },
+    {
+      "name": "offense_dim",
+      "rows": 121,
+      "meaning": "Offence code to description and crime_class. Already joined into crime.",
+      "columns": [
+        {
+          "name": "offense_code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "offense_description",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "crime_class",
+          "type": "VARCHAR"
+        }
+      ]
+    }
+  ],
+  "rules": [
+    "Every view already has a `neighborhood` column EXCEPT property, property_homes and open_space. Never write a spatial join yourself.",
+    "property and property_homes have NO coordinates. They join to other tables by `zipcode` only.",
+    "open_space has no coordinates and no neighborhood. It joins by `zipcode` only.",
+    "311 data covers 2026 only (Jan-Aug). Any question comparing 311 to a previous year is UNANSWERABLE - say so, do not write SQL.",
+    "Crime 2026 is partial (Jan 15 Aug). Never compare a full year to 2026 without restricting to `month <= 8`.",
+    "Use `crime_only` for crime questions. `crime` includes non-crimes and will overstate by ~97%.",
+    "Use `food_inspections` for inspection counts and rates. `food_violations` has ~4x more rows.",
+    "Use `property_homes` for typical home value. `property` includes 8,545 parking spaces worth ~$44,000 each.",
+    "311 `hours_to_close` is NULL for the 49.1% of cases still open. Report the open-case count alongside any median.",
+    "Licence tables contain only active records. Questions about revoked or expired licences are UNANSWERABLE.",
+    "`on_time` in svc311 is pre-computed by the city ('ONTIME' / 'OVERDUE'). Use it, do not recompute from timestamps."
+  ],
+  "examples": [
+    {
+      "question": "How many crimes were there in Roxbury in 2025?",
+      "sql": "SELECT count(*) FROM crime_only WHERE neighborhood = 'Roxbury' AND year = 2025;"
+    },
+    {
+      "question": "Which neighborhood has the most violent crime?",
+      "sql": "SELECT neighborhood, count(*) AS n FROM crime_only\nWHERE crime_class = 'violent' AND neighborhood IS NOT NULL\nGROUP BY 1 ORDER BY n DESC LIMIT 1;"
+    },
+    {
+      "question": "Is crime in Dorchester getting better or worse?",
+      "sql": "-- 2026 is Jan-Aug only, so compare like-for-like windows.\nSELECT year, count(*) AS n FROM crime_only\nWHERE neighborhood = 'Dorchester' AND month <= 8\nGROUP BY 1 ORDER BY 1;"
+    },
+    {
+      "question": "Which neighborhood waits longest for 311 requests?",
+      "sql": "SELECT neighborhood,\n       median(hours_to_close) AS median_hours,\n       count(*) FILTER (WHERE is_open) AS still_open\nFROM svc311 WHERE neighborhood IS NOT NULL\nGROUP BY 1 ORDER BY median_hours DESC;"
+    },
+    {
+      "question": "What do people in East Boston complain about most?",
+      "sql": "SELECT type, count(*) AS n FROM svc311\nWHERE neighborhood = 'East Boston' GROUP BY 1 ORDER BY n DESC LIMIT 10;"
+    },
+    {
+      "question": "What is the median home value in each neighborhood?",
+      "sql": "-- property has no coordinates; it joins by zipcode.\nSELECT p.zipcode, median(p.total_value) AS median_value, count(*) AS n\nFROM property_homes p GROUP BY 1 ORDER BY median_value DESC;"
+    },
+    {
+      "question": "What is the most valuable property in Boston?",
+      "sql": "SELECT owner, street_address, total_value\nFROM property ORDER BY total_value DESC LIMIT 5;"
+    },
+    {
+      "question": "What share of restaurant inspections fail?",
+      "sql": "SELECT result, count(*) AS n,\n       round(100.0 * count(*) / sum(count(*)) OVER (), 1) AS pct\nFROM food_inspections GROUP BY 1 ORDER BY n DESC;"
+    },
+    {
+      "question": "How many 311 cases were closed on time in Mattapan?",
+      "sql": "SELECT on_time, count(*) FROM svc311\nWHERE neighborhood = 'Mattapan' GROUP BY 1;"
+    },
+    {
+      "question": "How many liquor licences were revoked last year?",
+      "sql": "-- UNANSWERABLE: the licence tables contain only currently-active\n-- records. There is no revocation history. Abstain."
+    }
+  ]
+}

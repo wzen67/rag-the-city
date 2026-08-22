@@ -143,7 +143,22 @@ is much worse in the city's `rmsoffensecodes.xlsx`: 576 rows for 425 codes,
 **3 — `DISTRICT` has junk keys**: `'External'` (404), `'Outside of'` (2), NULL
 (532). Moot if you use the spatial join.
 
-**4 — 2026 is partial.** Eight months (through Aug 15) vs. twelve for 2025.
+**4 — Six incident numbers are not numeric.** `S97926080`, `S42866622`,
+`S67429345`, `S11935881`, `S55058281`, `S53786787`. DuckDB's type sniffer reads
+a sample, decides `INCIDENT_NUMBER` is `BIGINT`, and then `ignore_errors=true`
+**silently drops those six rows** when the data is actually materialised.
+`count(*)` still returns 290,130 because counting does not parse every field,
+so the loss is invisible until you write the rows somewhere. Read the column as
+`VARCHAR`:
+
+```sql
+read_csv_auto('...crime...csv.gz', ignore_errors = true,
+              types = {'INCIDENT_NUMBER': 'VARCHAR'})
+```
+
+Audited: crime is the only file in the repo with this problem.
+
+**5 — 2026 is partial.** Eight months (through Aug 15) vs. twelve for 2025.
 Comparing raw counts produces a fake 36% decline. Either annualize or compare
 Jan–Aug windows.
 

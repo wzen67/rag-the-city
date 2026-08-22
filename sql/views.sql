@@ -75,7 +75,11 @@ SELECT DISTINCT ON (OFFENSE_CODE)          -- one row per code: 111 has 2 spelli
         ELSE 'other_crime'
     END AS crime_class
 FROM read_csv_auto('data/crime-incident-reports-august-2015-to-date-source-new-system.csv.gz',
-                   ignore_errors = true)
+                   ignore_errors = true,
+                   -- 6 incidents have letter-prefixed ids like 'S97926080'. Without
+                   -- this the sniffer types the column BIGINT and ignore_errors
+                   -- silently drops those rows.
+                   types = {'INCIDENT_NUMBER': 'VARCHAR'})
 ORDER BY OFFENSE_CODE, OFFENSE_DESCRIPTION;
 
 -- The neighborhood is a scalar subquery, not a join: 2 incidents fall inside
@@ -101,7 +105,11 @@ SELECT
       WHERE c.Lat IS NOT NULL
         AND ST_Contains(n.geom, ST_Point(c.Long, c.Lat)) LIMIT 1) AS neighborhood
 FROM read_csv_auto('data/crime-incident-reports-august-2015-to-date-source-new-system.csv.gz',
-                   ignore_errors = true) c
+                   ignore_errors = true,
+                   -- 6 incidents have letter-prefixed ids like 'S97926080'. Without
+                   -- this the sniffer types the column BIGINT and ignore_errors
+                   -- silently drops those rows.
+                   types = {'INCIDENT_NUMBER': 'VARCHAR'}) c
 LEFT JOIN offense_dim d ON c.OFFENSE_CODE = d.offense_code;
 
 -- Only actual crimes. Use this for "how much crime" questions.
