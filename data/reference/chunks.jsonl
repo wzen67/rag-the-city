@@ -1,0 +1,136 @@
+{"text": "Case ID: A system-generated unique identifier for the case. Text BCS-00059336", "source": "311_data_dictionary.pdf", "section": "Case ID"}
+{"text": "Open Date: The date this case was opened. Datetime 2025-08-22 14:09:46.271+00", "source": "311_data_dictionary.pdf", "section": "Open Date"}
+{"text": "Case Topic: The subject or service related to this case. Text", "source": "311_data_dictionary.pdf", "section": "Case Topic"}
+{"text": "Service Name: The type of service that has to be rendered. Text Domestic Animal Issue", "source": "311_data_dictionary.pdf", "section": "Service Name"}
+{"text": "Assigned Department: The department this case was assigned to. Text Animal Care & Control", "source": "311_data_dictionary.pdf", "section": "Assigned Department"}
+{"text": "Assigned Team: The specific team within the department this case was assigned to. Text Animal control staff", "source": "311_data_dictionary.pdf", "section": "Assigned Team"}
+{"text": "Case Status: The current status of the case: \"Closed\" if the case has been closed \"In progress\" if the case is currently being worked on. Text Closed", "source": "311_data_dictionary.pdf", "section": "Case Status"}
+{"text": "Closure Reason: The reason this case was closed. Possible values: \"Transitioned\" if the case was reassigned to another agency \"Noted\" if no action is required \"Resolved\" if the case was resolved. Text Resolved", "source": "311_data_dictionary.pdf", "section": "Closure Reason"}
+{"text": "Closure Comments: Employee comments on findings or work done to close a given case. Text", "source": "311_data_dictionary.pdf", "section": "Closure Comments"}
+{"text": "Close Date: The date the case was marked as closed. Datetime 2025-08-22 14:09:46.271+00", "source": "311_data_dictionary.pdf", "section": "Close Date"}
+{"text": "Target Close Date: The target close date for this case Datetime 2025-08-22", "source": "311_data_dictionary.pdf", "section": "Target Close Date"}
+{"text": "On Time?: Whether the case was closed within the SLA. \"ONTIME\" if the case was closed on or before the Target Close Date, \"OVERDUE\" otherwise. Text ONTIME", "source": "311_data_dictionary.pdf", "section": "On Time?"}
+{"text": "Report Source: The medium through which this case was reported. Text Call", "source": "311_data_dictionary.pdf", "section": "Report Source"}
+{"text": "Submitted Photo: A link to the photo uploaded by the case reporter, if available. Text", "source": "311_data_dictionary.pdf", "section": "Submitted Photo"}
+{"text": "Closed Photo: A link to the photo uploaded by the employee when closing the case, if available. Text", "source": "311_data_dictionary.pdf", "section": "Closed Photo"}
+{"text": "Full Street Address: The complete street address of the location the case was reported. Text 1 City Hall Plz, Boston, MA 02114", "source": "311_data_dictionary.pdf", "section": "Full Street Address"}
+{"text": "Street Number: The street number where the case was reported. Text 1", "source": "311_data_dictionary.pdf", "section": "Street Number"}
+{"text": "Street Name: The street name where the case was reported. Text City Hall Plz", "source": "311_data_dictionary.pdf", "section": "Street Name"}
+{"text": "Zip Code: The zip code where the case was reported. Boston zip codes: 02132, 02116, 02163, 02135, 02134, 02114, 02133, 02122, 02205, 02199, 02118, 02110, 02128, 02125, 02124, 02126, 02113, 02129, 02136, 02109, 02108, 02210, 02203, 02111, 02120, 02131, 02115, 02130, 02467, 02215, 02127, 02119, 02121 Text 02114", "source": "311_data_dictionary.pdf", "section": "Zip Code"}
+{"text": "Neighborhood: The Planning neighborhood where the case was reported. See the full breakdown of Boston neighborhoods here. Text Downtown", "source": "311_data_dictionary.pdf", "section": "Neighborhood"}
+{"text": "Public Works District: The Public Works district where the case was reported. The full map of Public Works Districts can Text 1B", "source": "311_data_dictionary.pdf", "section": "Public Works District"}
+{"text": "City Council District: The City Council district where the case was reported. See current information on City Council districts here. Integer 1", "source": "311_data_dictionary.pdf", "section": "City Council District"}
+{"text": "Fire District: The Fire district where the case was reported. See current information on Fire districts here. Integer 3", "source": "311_data_dictionary.pdf", "section": "Fire District"}
+{"text": "Police District: The Police district where the case was reported. The full map of Police Districts can be found here. Text A1", "source": "311_data_dictionary.pdf", "section": "Police District"}
+{"text": "Ward: The ward where the case was reported. See current information on wards and precincts here. Integer 03", "source": "311_data_dictionary.pdf", "section": "Ward"}
+{"text": "Precinct: The precinct where the case was reported. See current information on wards and precincts here. Integer 06", "source": "311_data_dictionary.pdf", "section": "Precinct"}
+{"text": "Longitude (X): The longitude, or X coordinate, of the location of the address. Double -71.058271500001", "source": "311_data_dictionary.pdf", "section": "Longitude (X)"}
+{"text": "Latitude (Y): The latitude, or Y coordinate, of the location of the address. Double 42.360300000003", "source": "311_data_dictionary.pdf", "section": "Latitude (Y)"}
+{"text": "PID: Unique 10\u2010digit parcel number. First 2 digits are the ward, digits 3 to 7 are the parcel, and digits 8 to 10 are the sub\u2010parcel", "source": "property_fy2026_data_key.pdf", "section": "PID"}
+{"text": "CM_ID: 10\u2010digit parcel number of Condo Main, which houses all related condo units", "source": "property_fy2026_data_key.pdf", "section": "CM_ID"}
+{"text": "UNIT_NUM: Specific unit number within a housing complex", "source": "property_fy2026_data_key.pdf", "section": "UNIT_NUM"}
+{"text": "NUM_BLDGS: Total number of buildings of parcel", "source": "property_fy2026_data_key.pdf", "section": "NUM_BLDGS"}
+{"text": "LU: Type of Property (land use) A Residential 7 or more units E Tax\u2010exempt AH Agricultural/Horticultural EA Tax\u2010exempt (121A) C Commercial I Industrial CC Commercial condominium R1 Residential 1\u2010family CD Residential condominium unit R2 Residential 2\u2010family CL Commercial land R3 Residential 3\u2010family CM Condominium main (physical struc\u2010 R4 Residential 4 or more family t ture housing all related condo units with no assessed value) RC Mixed use (res. and comm.) CP Condo parking RL Residential land", "source": "property_fy2026_data_key.pdf", "section": "LU"}
+{"text": "OWN_OCC: Residential Exemption: \u201cY\u201d character code indicating if owner receives residential exemption as an owner\u2010occupied property", "source": "property_fy2026_data_key.pdf", "section": "OWN_OCC"}
+{"text": "MAIL_ADDRESS: Street address where tax bill is mailed", "source": "property_fy2026_data_key.pdf", "section": "MAIL_ADDRESS"}
+{"text": "MAIL_CITY: City/neighborhood where tax bill is mailed", "source": "property_fy2026_data_key.pdf", "section": "MAIL_CITY"}
+{"text": "MAIL_STATE: State where tax bill is mailed", "source": "property_fy2026_data_key.pdf", "section": "MAIL_STATE"}
+{"text": "MAIL_ZIP_CODE: Zip code where tax bill is mailed", "source": "property_fy2026_data_key.pdf", "section": "MAIL_ZIP_CODE"}
+{"text": "RES_FLOOR: Number of residential building stories", "source": "property_fy2026_data_key.pdf", "section": "RES_FLOOR"}
+{"text": "RES_UNITS: Number of residential units in a condominium building", "source": "property_fy2026_data_key.pdf", "section": "RES_UNITS"}
+{"text": "COM_UNITS: Number of commercial units in a condominium building", "source": "property_fy2026_data_key.pdf", "section": "COM_UNITS"}
+{"text": "RC_UNITS: Number of Residential/Commercial Units in a condominium building", "source": "property_fy2026_data_key.pdf", "section": "RC_UNITS"}
+{"text": "LAND_SF: Parcel\u2019s land area in square feet (legal area)", "source": "property_fy2026_data_key.pdf", "section": "LAND_SF"}
+{"text": "LIVING_AREA: Living area square footage of the property", "source": "property_fy2026_data_key.pdf", "section": "LIVING_AREA"}
+{"text": "BLDG_VALUE: Total assessed building value", "source": "property_fy2026_data_key.pdf", "section": "BLDG_VALUE"}
+{"text": "TOTAL_VALUE: Total assessed value for property", "source": "property_fy2026_data_key.pdf", "section": "TOTAL_VALUE"}
+{"text": "GROSS_TAX: Tax bill amount based on total assessed value multiplied by the tax rate per thousand", "source": "property_fy2026_data_key.pdf", "section": "GROSS_TAX"}
+{"text": "YR_REMODEL: Year property was last remodeled", "source": "property_fy2026_data_key.pdf", "section": "YR_REMODEL"}
+{"text": "STRUCTURE_CLASS: Structural classification of building: A Struct Steel C Brick/Concrete E Metal B Reinforced Concrete D Wood/Frame R Residential", "source": "property_fy2026_data_key.pdf", "section": "STRUCTURE_CLASS"}
+{"text": "ROOF_STRUCTURE: Roof Structure Types: F Flat L Gambrel S Shed G Gable M Mansard H Hip O Other", "source": "property_fy2026_data_key.pdf", "section": "ROOF_STRUCTURE"}
+{"text": "ROOF_COVER: Roof Cover Material: A Asphalt Shingle C Composition R Rubber Roof S Slate T Tile W Wood Shingle O Other", "source": "property_fy2026_data_key.pdf", "section": "ROOF_COVER"}
+{"text": "INT_WALL: Interior Wall Condition\u2010Residential", "source": "property_fy2026_data_key.pdf", "section": "INT_WALL"}
+{"text": "INT_COND: Interior Condition of parcel\u2010Residential", "source": "property_fy2026_data_key.pdf", "section": "INT_COND"}
+{"text": "OVERALL_COND: Overall condition of parcel", "source": "property_fy2026_data_key.pdf", "section": "OVERALL_COND"}
+{"text": "BED_RMS: Total number of bedrooms\u2010Residential", "source": "property_fy2026_data_key.pdf", "section": "BED_RMS"}
+{"text": "FULL_BTH: Total number of full baths\u2010Residential", "source": "property_fy2026_data_key.pdf", "section": "FULL_BTH"}
+{"text": "HALF_BTH: Total number of half baths\u2010Residential", "source": "property_fy2026_data_key.pdf", "section": "HALF_BTH"}
+{"text": "KITCHEN: Total number of kitchens\u2010Residential", "source": "property_fy2026_data_key.pdf", "section": "KITCHEN"}
+{"text": "TT_RMS: Total number of rooms\u2010Residential", "source": "property_fy2026_data_key.pdf", "section": "TT_RMS"}
+{"text": "BTHRM_STYLE1: Residential bath style \u2010bathroom #1", "source": "property_fy2026_data_key.pdf", "section": "BTHRM_STYLE1"}
+{"text": "BTHRM_STYLE2: Residential bath style \u2010bathroom #2", "source": "property_fy2026_data_key.pdf", "section": "BTHRM_STYLE2"}
+{"text": "BTHRM_STYLE3: Residential bath style \u2010 bathroom #3", "source": "property_fy2026_data_key.pdf", "section": "BTHRM_STYLE3"}
+{"text": "KITCHEN_STYLE1: Residential kitchen style \u2013kitchen #1", "source": "property_fy2026_data_key.pdf", "section": "KITCHEN_STYLE1"}
+{"text": "KITCHEN_STYLE2: Residential kitchen style \u2013 kitchen #2", "source": "property_fy2026_data_key.pdf", "section": "KITCHEN_STYLE2"}
+{"text": "KITCHEN_STYLE3: Residential kitchen style \u2013kitchen #3", "source": "property_fy2026_data_key.pdf", "section": "KITCHEN_STYLE3"}
+{"text": "HEAT_SYSTEM: Heating System (individually controlled, common or self\u2010contained)", "source": "property_fy2026_data_key.pdf", "section": "HEAT_SYSTEM"}
+{"text": "AC_TYPE: Air Conditioning Type\u2010Residential", "source": "property_fy2026_data_key.pdf", "section": "AC_TYPE"}
+{"text": "ORIENTATION: Indicates the location a condominium unit in the building is facing", "source": "property_fy2026_data_key.pdf", "section": "ORIENTATION"}
+{"text": "CORNER_UNIT: Indicates if the unit is locating in the corner of the building (Y/N)", "source": "property_fy2026_data_key.pdf", "section": "CORNER_UNIT"}
+{"text": "CLOSURE_REASON - Employees give a closure status and then enter text indicating", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "findings or work done to close a given case.", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "- Noted - Case is noted by employee and closed.", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "- Resolved - Case work completed or issue has been addressed and the", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "- NOACC - \u201cNo Access\u201d Employee could not access issue or problem", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "- TFA - \u201cTenant Failed Apt\u201d caller was not home at the time employee\u2019s", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "- Closed - Case is closed. Comments indicate work done in order to", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "- NOBASE - \u201cNo basis\u201d Employee found no basis for issue or caller", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "- CORR - \u201cCorrected\u201d Issue has been corrected.", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "- ROA - \u201cRefer to other agency\u201d case referred to other agency for", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "- Internal Case - Employee generated case", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "- Case Invalid - Indicates an error or lack of information needed to", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "- Duplicate of Existing Case - Duplicate of case already within system", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "- Scheduled - Work has been scheduled to complete case (often refers to", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "- NOVIO - \u201cNo Violation\u201d violation not found", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "- Bulk Item Automation - Bulk item pickup has been scheduled", "source": "311_crm_value_codes.pdf", "section": "CLOSURE_REASON"}
+{"text": "CASE_TITLE - Title given to a case. Most titles are self-evident. This field is entered by call", "source": "311_crm_value_codes.pdf", "section": "CASE_TITLE"}
+{"text": "SUBJECT - Part of a case classification hierarchy (SUBJECT > REASON > TYPE) Subhect", "source": "311_crm_value_codes.pdf", "section": "SUBJECT"}
+{"text": "denotes which department a case is assigned to:", "source": "311_crm_value_codes.pdf", "section": "SUBJECT"}
+{"text": "REASON - Part of a case classification hierarchy (SUBJECT > REASON > TYPE). This is an", "source": "311_crm_value_codes.pdf", "section": "REASON"}
+{"text": "overall \u2018umbrella\u2019 for a collection of similar case types.", "source": "311_crm_value_codes.pdf", "section": "REASON"}
+{"text": "- Participatory Budgeting Idea Collection", "source": "311_crm_value_codes.pdf", "section": "REASON"}
+{"text": "TYPE - Part of a case classification hierarchy (SUBJECT > REASON > TYPE). Individual", "source": "311_crm_value_codes.pdf", "section": "TYPE"}
+{"text": "- Ground Maintenance: Little Scobie Playground", "source": "311_crm_value_codes.pdf", "section": "TYPE"}
+{"text": "QUEUE - Queue a case is assigned to. There are multiple queues within many departments", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- BTDT_Engineering_New Sign and Pavement Marking", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- PWDx_Missed Trash\\Recycling\\Yard Waste\\Bulk Item", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "Department - Department a case is assigned to. This value is derived from the first 4 digits of", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "the queue column. For departmental information or descriptions see cityofboston.gov", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- INFO - Information Channel (Not a department)", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- No Q - No queue assigned (Not a department)", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- HS_O - Housing - Office of Civil Rights", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "fire_district - BFD fire district case is within. There are 2 divisions and 9 districts. Division 1 is", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "comprised of Districts 1, 3 (includes old district 2), 4, 6, and 11. Division 2 is comprised of", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- 3 - Beacon Hill, West End, North End, Charlestown", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- 8 - Dorchester, Boston Harbor (Moon Island, Long Island)", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- 12 - Roslindale, Hyde Park, West Roxbury", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "pwd_district - Public Works district tied to a case.", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- District 1 - Boston Proper and Charlestown", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "city_council_district - City Council district a case falls within:", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- District 1 - Charlestown, East Boston, North End (Sal LaMattina)", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- District 2 - Downtown, South Boston, South End (Bill Linehan)", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- District 5 - Hyde Park, Roslindale (Timothy McCarthy)", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- District 6 - Jamaica Plain, West Roxbury (Matt O\u2019Malley)", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- District 8 - Back Bay, Beacon Hill, Fenway / Kenmore, Mission Hill, West End", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- District 9 - Allston / Brighton (Mark Ciommo)", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "police_district - Police district a case falls within", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "neighborhood - Neighborhood relayed by caller and entered by call taker. There are", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "redundancies and missing values within this field.", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- Fenway / Kenmore / Audubon Circle / Longwood", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "neighborhood_services_district - districts under the Office of Neighborhood Services, a City of", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "Boston office that \u201c...encourages, facilitates and maximizes citizen input and participation in all", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "aspects of government through service requests, neighborhood meetings, mailings, and", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "precinct - Election precinct a case falls within", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "land_usage - Usage allowed for a given parcel of land. See: \u200bhttp://bit.ly/1EuKvoC", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "- CM - Condo Main (bldg. broken into condo units)", "source": "311_crm_value_codes.pdf", "section": "QUEUE"}
+{"text": "LOCATION_ZIPCODE - Zip code a case falls within", "source": "311_crm_value_codes.pdf", "section": "LOCATION_ZIPCODE"}
+{"text": "[incident_num] [varchar](20) NOT NULL,: Internal BPD report number", "source": "crime_field_explanation.xlsx", "section": "[incident_num] [varchar](20) NOT NULL,"}
+{"text": "[offense_code][varchar](25) NULL,: Numerical code of offense description", "source": "crime_field_explanation.xlsx", "section": "[offense_code][varchar](25) NULL,"}
+{"text": "[Offense_Code_Group_Description][varchar](80) NULL,: Internal categorization of [offense_description]", "source": "crime_field_explanation.xlsx", "section": "[Offense_Code_Group_Description][varchar](80) NULL,"}
+{"text": "[Offense_Description][varchar](80) NULL,: Primary descriptor of incident", "source": "crime_field_explanation.xlsx", "section": "[Offense_Description][varchar](80) NULL,"}
+{"text": "[district] [varchar](10) NULL,: What district the crime was reported in", "source": "crime_field_explanation.xlsx", "section": "[district] [varchar](10) NULL,"}
+{"text": "[reporting_area] [varchar](10) NULL,: RA number associated with the where the crime was reported from.", "source": "crime_field_explanation.xlsx", "section": "[reporting_area] [varchar](10) NULL,"}
+{"text": "[shooting][char] (1) NULL,: Indicated a shooting took place.", "source": "crime_field_explanation.xlsx", "section": "[shooting][char] (1) NULL,"}
+{"text": "[occurred_on] [datetime2](7) NULL,: Earliest date and time the incident could have taken place", "source": "crime_field_explanation.xlsx", "section": "[occurred_on] [datetime2](7) NULL,"}
+{"text": "[UCR_Part] [varchar](25) NULL,: Universal Crime Reporting Part number (1,2, 3)", "source": "crime_field_explanation.xlsx", "section": "[UCR_Part] [varchar](25) NULL,"}
+{"text": "[street] [varchar](50) NULL,: Street name the incident took place", "source": "crime_field_explanation.xlsx", "section": "[street] [varchar](50) NULL,"}

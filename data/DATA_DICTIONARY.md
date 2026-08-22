@@ -101,10 +101,36 @@ coverage of the full table.
 ### Landmines
 
 **1 — Most rows are not crimes.** The top two "offenses" are `INVESTIGATE
-PERSON` (29,330) and `SICK ASSIST` (27,115). A naive `count(*)` overstates
-Boston crime by **75.2%**, and the overstatement varies by neighborhood
-(≈+50% Downtown, ≈+92% Brighton) — so naive counting also ranks neighborhoods
-in the wrong order. Classify offense codes before counting.
+PERSON` (29,330) and `SICK ASSIST` (27,115). The file also carries traffic
+accidents, medical assists, sudden deaths, fire reports and landlord-tenant
+disputes — reports that exist, but where no offence was committed.
+
+⚠️ **The size of the error depends on where you draw the line, so quote only
+the number the committed classifier produces.** `sql/views.sql` defines
+`offense_dim.crime_class`; against that classifier:
+
+```
+naive count(*)     290,130
+crime_only         146,933      naive overstates by 97.5%
+```
+
+Loosening the classifier (counting accidents and medical calls as crime)
+drops this to roughly 59%. That is a 40-point swing driven purely by a
+definition, so **never state a crime total without pointing at the
+classifier**, and expect a judge to ask where the line is. The defensible
+answer is that the rule is committed SQL anyone can read and change — not
+that a single number is objectively right.
+
+The overstatement also varies sharply by neighborhood, which is the real
+argument: naive counting ranks neighborhoods wrongly, not just totals.
+
+| Neighborhood | naive | actual crime | overstated by |
+|---|---:|---:|---:|
+| Roslindale | 5,821 | 2,400 | +142.5% |
+| West End | 4,738 | 1,957 | +142.1% |
+| Beacon Hill | 3,143 | 1,391 | +126.0% |
+| Mattapan | 9,472 | 4,314 | +119.6% |
+| Fenway | 6,577 | 2,999 | +119.3% |
 
 **2 — Code 111 has two spellings.** `MURDER, NON-NEGLIGENT MANSLAUGHTER` and
 `MURDER, NON-NEGLIGIENT MANSLAUGHTER` (typo in the source). That's why there
@@ -124,17 +150,16 @@ Jan–Aug windows.
 ### Example queries
 
 ```sql
+-- Run sql/views.sql first. These query the views, which already handle
+-- the classification, the spatial join and the empty columns.
+
 -- Q: How many crimes in Roxbury in 2025?
-SELECT count(*) FROM crime cr
-JOIN hoods h ON ST_Contains(h.geom, ST_Point(cr.Long, cr.Lat))
-WHERE h.name = 'Roxbury' AND cr.YEAR = 2025
-  AND cr.OFFENSE_CODE IN (SELECT code FROM offense_dim WHERE is_crime);
+SELECT count(*) FROM crime_only WHERE neighborhood = 'Roxbury' AND year = 2025;
 
 -- Q: Is crime in Roxbury getting better or worse?
--- NOTE: 2026 is Jan-Aug only. Compare like-for-like windows.
-SELECT YEAR, count(*) FROM crime cr
-JOIN hoods h ON ST_Contains(h.geom, ST_Point(cr.Long, cr.Lat))
-WHERE h.name='Roxbury' AND MONTH <= 8
+-- NOTE: 2026 is Jan-Aug only, so compare like-for-like windows.
+SELECT year, count(*) FROM crime_only
+WHERE neighborhood = 'Roxbury' AND month <= 8
 GROUP BY 1 ORDER BY 1;
 ```
 
@@ -428,11 +453,17 @@ Athletic Fields; Parkways, Reservations & Beaches; …), `ACRES`, `ADDRESS`,
 `DISTRICT` (its own neighborhood-ish grouping — not the canonical 26),
 `ZipCode`, `OS_ID`, `shape_wkt`.
 
-**`shape_wkt` is populated on 234 of 272 rows (86%)** — unlike the boundaries
-CSV. Usable, but 38 parks have no geometry; report that if you map them.
+❌ **This file has no usable geometry** — correcting an earlier claim in this
+document that 234 of 272 rows carried WKT. They do not. The header declares 27
+fields but data rows carry 28 (an unquoted comma inside a text field), so the
+parser shifts `Shape_Area` into `shape_wkt`. **Zero rows contain a POLYGON.**
+Open space cannot be joined spatially from this CSV; it joins by `ZipCode`.
+
+`DISTRICT` here is the source's own grouping (`Allston-Brighton`,
+`Central Boston`), **not** one of the canonical 26.
 
 Small enough to embed whole. Best used to answer "what parks are in X" and as
-a green-space denominator per neighborhood.
+a green-space denominator per ZIP.
 
 ---
 
@@ -457,7 +488,7 @@ from this file will lose 30 minutes to an empty result set.
 | licences | `hoods` | same, **after `ST_Transform`** | State Plane |
 | food | `hoods` | parse `location` string first | |
 | food | licences | `licenseno` ↔ `license_num` | different formats — needs normalising, verify before relying on it |
-| open space | `hoods` | `shape_wkt` → `ST_GeomFromText`, `ST_Intersects` | 86% coverage |
+| open space | — | ⚠️ **no geometry — ZIP only** | `shape_wkt` is empty/shifted |
 | **property** | `hoods` | ⚠️ **ZIP crosswalk only — no coordinates** | the one exception to the spatial join |
 | property | 311 / food | `ZIP_CODE` ↔ `location_zipcode` / `zip` | the equity-gap join |
 
