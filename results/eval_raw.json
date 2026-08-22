@@ -1,0 +1,670 @@
+{
+  "naive": [
+    {
+      "id": "R01",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "R01",
+        "persona": "resident",
+        "route": "scorecard",
+        "pass": false,
+        "why": "scorecard missing name or metric",
+        "citation_ok": false,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "R02",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "R02",
+        "persona": "resident",
+        "route": "aggregate",
+        "pass": false,
+        "why": "count gold=757 miss",
+        "citation_ok": false,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": false,
+        "is_counting": true,
+        "must_abstain": false,
+        "schema_grounding": true,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "R03",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "R03",
+        "persona": "resident",
+        "route": "lookup",
+        "pass": false,
+        "why": "missing expected theme",
+        "citation_ok": false,
+        "fabrication": false,
+        "retrieval_hit@5": false,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "R04",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "R04",
+        "persona": "resident",
+        "route": "definition",
+        "pass": false,
+        "why": "definition miss",
+        "citation_ok": false,
+        "fabrication": false,
+        "retrieval_hit@5": false,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": true,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "R05",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "R05",
+        "persona": "resident",
+        "route": "aggregate",
+        "pass": false,
+        "why": "count gold=62.3 miss",
+        "citation_ok": false,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": false,
+        "is_counting": true,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "R06",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "R06",
+        "persona": "resident",
+        "route": "value_judgment",
+        "pass": false,
+        "why": "must refuse 'safe' and still cite metrics",
+        "citation_ok": false,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "R07",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "R07",
+        "persona": "resident",
+        "route": "unanswerable",
+        "pass": false,
+        "why": "expected abstention",
+        "citation_ok": true,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": true,
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "R08",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "R08",
+        "persona": "resident",
+        "route": "aggregate",
+        "pass": false,
+        "why": "count gold=45.7 miss",
+        "citation_ok": false,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": false,
+        "is_counting": true,
+        "must_abstain": false,
+        "schema_grounding": true,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "M01",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "M01",
+        "persona": "manager",
+        "route": "aggregate",
+        "pass": false,
+        "why": "rank miss",
+        "citation_ok": false,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": true,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "M02",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "M02",
+        "persona": "manager",
+        "route": "aggregate",
+        "pass": false,
+        "why": "equity miss",
+        "citation_ok": false,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "M03",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "M03",
+        "persona": "manager",
+        "route": "aggregate",
+        "pass": false,
+        "why": "rank miss",
+        "citation_ok": false,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": true,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "M04",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "M04",
+        "persona": "manager",
+        "route": "aggregate",
+        "pass": false,
+        "why": "count gold=3537 miss",
+        "citation_ok": false,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": false,
+        "is_counting": true,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "M05",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "M05",
+        "persona": "manager",
+        "route": "aggregate",
+        "pass": false,
+        "why": "count gold=7005 miss",
+        "citation_ok": false,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": false,
+        "is_counting": true,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "M06",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "M06",
+        "persona": "manager",
+        "route": "unanswerable",
+        "pass": false,
+        "why": "expected abstention",
+        "citation_ok": true,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": true,
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "M07",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "M07",
+        "persona": "manager",
+        "route": "aggregate",
+        "pass": false,
+        "why": "rank miss",
+        "citation_ok": false,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": true,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "M08",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "M08",
+        "persona": "manager",
+        "route": "unanswerable",
+        "pass": false,
+        "why": "expected abstention",
+        "citation_ok": true,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": true,
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "T01",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "T01",
+        "persona": "resident",
+        "route": "aggregate",
+        "pass": false,
+        "why": "count gold=7957 miss",
+        "citation_ok": false,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": false,
+        "is_counting": true,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "T02",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "T02",
+        "persona": "manager",
+        "route": "unanswerable",
+        "pass": false,
+        "why": "expected abstention",
+        "citation_ok": true,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": true,
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "T03",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "T03",
+        "persona": "resident",
+        "route": "value_judgment",
+        "pass": false,
+        "why": "must refuse 'safe' and still cite metrics",
+        "citation_ok": false,
+        "fabrication": false,
+        "retrieval_hit@5": null,
+        "sql_accurate": null,
+        "is_counting": false,
+        "must_abstain": false,
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    },
+    {
+      "id": "T04",
+      "answer": {
+        "answer": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "sql": null,
+        "citations": [],
+        "retrieved_ids": [],
+        "schema_grounding": false,
+        "engine": "head-rows-extractive",
+        "abstained": false,
+        "refused_value_judgment": false
+      },
+      "score": {
+        "id": "T04",
+        "persona": "manager",
+        "route": "aggregate",
+        "pass": false,
+        "why": "count gold=0 miss",
+        "citation_ok": false,
+        "fabrication": true,
+        "retrieval_hit@5": null,
+        "sql_accurate": false,
+        "is_counting": true,
+        "must_abstain": false,
+        "schema_grounding": true,
+        "engine": "head-rows-extractive",
+        "answer_preview": "Based on the first 50 spreadsheet rows I was given, I cannot compute a citywide total. The snippet may include SICK ASSIST mixed with other incidents. A rough guess from the head of the file is that counts are on the order of the rows shown (about 50).",
+        "label": "naive",
+        "schema_flag": false
+      }
+    }
+  ],
+  "ours": [],
+  "naive_summary": {
+    "label": "naive",
+    "n": 20,
+    "passed": 0,
+    "overall": 0.0,
+    "counting_ok": 0,
+    "counting_n": 7,
+    "abstain_ok": 0,
+    "abstain_n": 4,
+    "fabrications": 11,
+    "citation_ok": 0,
+    "citation_n": 16,
+    "hit_at_5": 0.0,
+    "sql_ok": 0,
+    "sql_n": 3,
+    "by_persona": {
+      "resident": {
+        "n": 10,
+        "pass": 0
+      },
+      "manager": {
+        "n": 10,
+        "pass": 0
+      }
+    }
+  },
+  "ours_summary": {
+    "label": "ours",
+    "n": 0,
+    "passed": 0,
+    "overall": NaN,
+    "counting_ok": 0,
+    "counting_n": 7,
+    "abstain_ok": 0,
+    "abstain_n": 4,
+    "fabrications": 0,
+    "citation_ok": 0,
+    "citation_n": 16,
+    "hit_at_5": null,
+    "sql_ok": 0,
+    "sql_n": 0,
+    "by_persona": {}
+  },
+  "system": null,
+  "schema_grounding": true
+}
