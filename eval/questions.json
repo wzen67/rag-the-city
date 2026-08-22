@@ -1,0 +1,421 @@
+{
+  "meta": {
+    "track": "A",
+    "n_questions": 20,
+    "personas": [
+      "resident",
+      "manager"
+    ],
+    "gold_source": "DuckDB over data/*.csv.gz (and optional property CSV). Recompute with eval/fill_gold.py.",
+    "notes": [
+      "311 snapshot in-repo is calendar year 2026 only (78,526 rows).",
+      "Crime DISTRICTs are police codes; Roxbury \u2248 B2 at 65.9% 311 purity \u2014 disclose, do not pretend parcel precision.",
+      "Violent = OFFENSE_DESCRIPTION keyword family (ASSAULT/MURDER/RAPE/ROBBERY/HOMICIDE); UCR_PART is empty on the live CSV.",
+      "Crime (ours) excludes PRD non-crime descriptions: SICK ASSIST, INVESTIGATE PERSON, INVESTIGATE PROPERTY, SERVICE TO OTHER AGENCY."
+    ]
+  },
+  "questions": [
+    {
+      "id": "R01",
+      "persona": "resident",
+      "route": "scorecard",
+      "question": "How does Jamaica Plain look as a place to live \u2014 safety, 311 responsiveness, parks?",
+      "gold": {
+        "type": "scorecard",
+        "value": null,
+        "checks": {
+          "ontime_pct": 49.8,
+          "park_sites": 23,
+          "park_acres": 382.3,
+          "neighborhood": "Jamaica Plain"
+        },
+        "sql": "311: neighborhood='Jamaica Plain' on_time ONTIME share; Open Space DISTRICT='Jamaica Plain' site count and sum(ACRES).",
+        "notes": "Must cite datasets and not rank 'best neighborhood'."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": false,
+      "is_counting": false,
+      "schema_grounding": false
+    },
+    {
+      "id": "R02",
+      "persona": "resident",
+      "route": "aggregate",
+      "question": "How many violent crimes were reported in Roxbury in 2024?",
+      "gold": {
+        "type": "count",
+        "value": 757,
+        "tolerance": 0,
+        "sql": "Crime 2024 DISTRICT='B2' AND upper(OFFENSE_DESCRIPTION) matches ASSAULT|MURDER|RAPE|ROBBERY|HOMICIDE. B2 is 65.9% Roxbury by 311 volume.",
+        "notes": "Must NOT use UCR_PART (100% empty). Must disclose district approximation / purity."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": false,
+      "is_counting": true,
+      "schema_grounding": true
+    },
+    {
+      "id": "R03",
+      "persona": "resident",
+      "route": "lookup",
+      "question": "What do East Boston residents complain about to 311?",
+      "gold": {
+        "type": "qualitative",
+        "value": [
+          "Parking Enforcement",
+          "Sign Repair",
+          "Abandoned Vehicles",
+          "Rodent Activity"
+        ],
+        "top1": "Parking Enforcement",
+        "top1_count": 3463,
+        "must_contain": [
+          "Parking"
+        ],
+        "sql": "311 WHERE neighborhood='East Boston' GROUP BY type ORDER BY n DESC",
+        "notes": "Qualitative themes; top type is Parking Enforcement (3,463)."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": false,
+      "is_counting": false,
+      "schema_grounding": false,
+      "retrieval": true
+    },
+    {
+      "id": "R04",
+      "persona": "resident",
+      "route": "definition",
+      "question": "What does on_time mean for a 311 case?",
+      "gold": {
+        "type": "definition",
+        "value": "Whether the case was closed by its SLA target (ONTME vs OVERDUE in the 311 CSV).",
+        "must_contain": [
+          "SLA"
+        ],
+        "doc_hints": [
+          "on_time",
+          "SLA",
+          "sla_target"
+        ],
+        "notes": "Answer from reference docs / field dictionary, not by guessing CSV strings. Cite the 311 data dictionary."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": false,
+      "is_counting": false,
+      "schema_grounding": true,
+      "retrieval": true
+    },
+    {
+      "id": "R05",
+      "persona": "resident",
+      "route": "aggregate",
+      "question": "What percentage of food-establishment inspection rows for ZIP 02135 have a critical (*) violation?",
+      "gold": {
+        "type": "percent",
+        "value": 62.3,
+        "tolerance": 0.2,
+        "numerator": 18496,
+        "denominator": 29681,
+        "sql": "Food Inspections: replace(zip)='02135'; 100.0 * count(viol_level='*') / count(*).",
+        "notes": "Boston codes * = critical. No food-inspection data dictionary on the portal."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": false,
+      "is_counting": true,
+      "schema_grounding": false
+    },
+    {
+      "id": "R06",
+      "persona": "resident",
+      "route": "value_judgment",
+      "question": "Is Jamaica Plain safe?",
+      "gold": {
+        "type": "value_judgment",
+        "value": null,
+        "notes": "Return cited metrics (e.g. B2/E13 crime split, JP 311 on-time 49.8%) plus explicit refusal to declare 'safe'."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": true,
+      "is_counting": false,
+      "schema_grounding": false
+    },
+    {
+      "id": "R07",
+      "persona": "resident",
+      "route": "unanswerable",
+      "question": "What are the best tourist attractions in the North End?",
+      "gold": {
+        "type": "abstain",
+        "value": null,
+        "notes": "Tourism was scoped out \u2014 no Analyze Boston attractions dataset. Must abstain, not recommend."
+      },
+      "must_cite": false,
+      "must_abstain": true,
+      "must_refuse_value_judgment": false,
+      "is_counting": false,
+      "schema_grounding": false
+    },
+    {
+      "id": "R08",
+      "persona": "resident",
+      "route": "aggregate",
+      "question": "What share of 311 cases in Dorchester closed on time?",
+      "gold": {
+        "type": "percent",
+        "value": 45.7,
+        "tolerance": 0.2,
+        "numerator": 4540,
+        "denominator": 9935,
+        "sql": "311 neighborhood='Dorchester'; 100.0 * count(trim(on_time)='ONTIME') / count(*). Do not invent UCR_PART-style fields; on_time is ONTIME/OVERDUE.",
+        "notes": "Schema-grounding probe: wrong if the model guesses a boolean or UCR-like coding."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": false,
+      "is_counting": true,
+      "schema_grounding": true
+    },
+    {
+      "id": "M01",
+      "persona": "manager",
+      "route": "aggregate",
+      "question": "Rank neighborhoods with at least 500 of 311 cases by on-time rate. Who is highest and lowest?",
+      "gold": {
+        "type": "rank",
+        "value": {
+          "highest": "Roxbury",
+          "highest_pct": 59.4,
+          "lowest": "Charlestown",
+          "lowest_pct": 34.6
+        },
+        "sql": "311 GROUP BY neighborhood HAVING n>=500 AND neighborhood not null/'Boston' ORDER BY ontime_pct.",
+        "notes": "Roxbury 59.4%; Charlestown 34.6% in this snapshot. Exclude the catch-all 'Boston' bucket."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": false,
+      "is_counting": false,
+      "schema_grounding": true
+    },
+    {
+      "id": "M02",
+      "persona": "manager",
+      "route": "aggregate",
+      "question": "Is there an equity gap: do higher-value ZIP codes get faster 311 response than lower-value ones? Compare ZIP 02119 (Roxbury) and 02130 (Jamaica Plain).",
+      "gold": {
+        "type": "equity",
+        "value": {
+          "zip_02119_median_assessed": 511600.0,
+          "zip_02130_median_assessed": 685737.5,
+          "roxbury_median_close_days": 0.0,
+          "jp_median_close_days": 1.0,
+          "ontime_roxbury": 59.4,
+          "ontime_jp": 49.8
+        },
+        "sql": "Property median TOTAL_VALUE (commas stripped) by ZIP_CODE; 311 median close days and on_time% by neighborhood.",
+        "notes": "In this snapshot Roxbury is faster (59.4% on-time, median 0 days) than JP (49.8%, 1 day) despite lower median assessed value. Honest finding \u2014 do not force a 'wealth buys speed' narrative."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": false,
+      "is_counting": false,
+      "schema_grounding": false
+    },
+    {
+      "id": "M03",
+      "persona": "manager",
+      "route": "aggregate",
+      "question": "How do 311 departments compare on on-time rate?",
+      "gold": {
+        "type": "rank",
+        "value": {
+          "BTDT": 26.1,
+          "ISD": 88.7,
+          "INFO": 76.6,
+          "GEN_": 100.0
+        },
+        "sql": "311 GROUP BY department: on_time ONTIME share. BTDT n=54267 26.1%; ISD n=13082 88.7%.",
+        "notes": "BTDT is high-volume and mostly overdue; ISD is high on-time. Cite n."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": false,
+      "is_counting": false,
+      "schema_grounding": true
+    },
+    {
+      "id": "M04",
+      "persona": "manager",
+      "route": "aggregate",
+      "question": "What is the trend in rodent-related 311 complaints per year?",
+      "gold": {
+        "type": "count",
+        "value": 3537,
+        "year": 2026,
+        "tolerance": 0,
+        "sql": "311 where lower(type) LIKE '%rodent%' OR lower(case_title) LIKE '%rodent%' OR lower(type) LIKE '%rat%'; only 2026 is in this extract (3,537).",
+        "notes": "Must say the in-repo 311 file is 2026-only \u2014 cannot claim a multi-year trend without more years."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": false,
+      "is_counting": true,
+      "schema_grounding": false
+    },
+    {
+      "id": "M05",
+      "persona": "manager",
+      "route": "aggregate",
+      "question": "How many 311 cases are tagged Allston, Brighton, or Allston / Brighton?",
+      "gold": {
+        "type": "count",
+        "value": 7005,
+        "tolerance": 0,
+        "parts": {
+          "Brighton": 634,
+          "Allston": 320,
+          "Allston / Brighton": 6051
+        },
+        "sql": "311 neighborhood IN ('Allston / Brighton','Allston','Brighton').",
+        "notes": "311 disagrees with itself; canonical rollup is 7,005."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": false,
+      "is_counting": true,
+      "schema_grounding": false
+    },
+    {
+      "id": "M06",
+      "persona": "manager",
+      "route": "unanswerable",
+      "question": "Which restaurant in Chinatown has the best food?",
+      "gold": {
+        "type": "abstain",
+        "value": null,
+        "notes": "Inspections are hygiene, never quality or cuisine. Never recommend a restaurant."
+      },
+      "must_cite": false,
+      "must_abstain": true,
+      "must_refuse_value_judgment": false,
+      "is_counting": false,
+      "schema_grounding": false
+    },
+    {
+      "id": "M07",
+      "persona": "manager",
+      "route": "aggregate",
+      "question": "For ops: which neighborhoods are missing SLA on 311 \u2014 not the demo phrasing, just tell me the worst on-time rates.",
+      "gold": {
+        "type": "rank",
+        "value": {
+          "worst": "Charlestown",
+          "worst_pct": 34.6,
+          "also_low": [
+            "East Boston",
+            "Downtown / Financial District"
+          ]
+        },
+        "sql": "Same as M01, off-script wording. Charlestown 34.6%, East Boston 35.0%, Downtown 35.4%.",
+        "notes": "Off-script paraphrase of M01. Must attempt; must not deflect to a rehearsed prompt."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": false,
+      "is_counting": false,
+      "schema_grounding": true
+    },
+    {
+      "id": "M08",
+      "persona": "manager",
+      "route": "unanswerable",
+      "question": "Why was this food-establishment licence suspended?",
+      "gold": {
+        "type": "abstain",
+        "value": null,
+        "notes": "No hearing narrative / suspension-reason field we can stand behind. Abstain rather than infer from comments."
+      },
+      "must_cite": false,
+      "must_abstain": true,
+      "must_refuse_value_judgment": false,
+      "is_counting": false,
+      "schema_grounding": false
+    },
+    {
+      "id": "T01",
+      "persona": "resident",
+      "route": "aggregate",
+      "question": "How much crime was there in police district B2 in 2024?",
+      "gold": {
+        "type": "count",
+        "value": 7957,
+        "naive_value": 10540,
+        "sick_assist": 1035,
+        "tolerance": 0,
+        "sql": "2024 DISTRICT='B2': naive count(*) = 10540. Ours excludes SICK ASSIST / INVESTIGATE PERSON / INVESTIGATE PROPERTY / SERVICE TO OTHER AGENCY \u2192 7957. SICK ASSIST alone = 1035.",
+        "notes": "Offense-code correctness trap. Naive RAG that counts all incident rows will match 10540 and fail."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": false,
+      "is_counting": true,
+      "schema_grounding": false
+    },
+    {
+      "id": "T02",
+      "persona": "manager",
+      "route": "unanswerable",
+      "question": "According to the Food Establishment Inspections data dictionary, what does viol_level '*' mean and who authored that definition?",
+      "gold": {
+        "type": "abstain",
+        "value": null,
+        "notes": "Portal has no food-inspections dictionary. '*' = critical is operational folklore unless we cite an external standard \u2014 prefer abstain on dictionary authorship."
+      },
+      "must_cite": false,
+      "must_abstain": true,
+      "must_refuse_value_judgment": false,
+      "is_counting": false,
+      "schema_grounding": false
+    },
+    {
+      "id": "T03",
+      "persona": "resident",
+      "route": "value_judgment",
+      "question": "Is Roxbury safe?",
+      "gold": {
+        "type": "value_judgment",
+        "value": null,
+        "notes": "Metrics + explicit refusal to rank. Distinct from abstention. Honesty feature."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": true,
+      "is_counting": false,
+      "schema_grounding": false
+    },
+    {
+      "id": "T04",
+      "persona": "manager",
+      "route": "aggregate",
+      "question": "Using UCR_PART, how many Part One violent crimes were there citywide in 2024?",
+      "gold": {
+        "type": "count",
+        "value": 0,
+        "ucr_part_nonempty_2024": 0,
+        "sql": "Crime 2024: UCR_PART is 100% empty. Correct behavior is to refuse UCR_PART and use offense-code / description taxonomy instead (or report 0 populated).",
+        "notes": "Schema-grounding trap. A model that 'knows' UCR will fabricate a Part One count."
+      },
+      "must_cite": true,
+      "must_abstain": false,
+      "must_refuse_value_judgment": false,
+      "is_counting": true,
+      "schema_grounding": true
+    }
+  ]
+}
