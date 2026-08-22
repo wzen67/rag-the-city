@@ -1,0 +1,227 @@
+{
+  "configuration": {
+    "k": 5,
+    "confidence_threshold": 0.8,
+    "max_distance_miles": 0.5,
+    "test_size": 0.2,
+    "random_state": 42
+  },
+  "training": {
+    "reported_zip_rows_with_valid_coordinates": 59147,
+    "unique_coordinate_groups": 26304,
+    "coordinate_groups_with_conflicting_labels": 14
+  },
+  "validation": {
+    "coordinate_group_train_rows": 21043,
+    "coordinate_group_test_rows": 5261,
+    "raw_accuracy": 0.9830830640562631,
+    "acceptance_rate": 0.9711081543432808,
+    "accepted_accuracy": 0.9921706791935799,
+    "accepted_test_rows": 5109,
+    "rejected_test_rows": 152,
+    "per_zip": [
+      {
+        "actual_zip": "02108",
+        "test_rows": 54,
+        "raw_accuracy": 0.9444444444444444,
+        "acceptance_rate": 0.9629629629629629
+      },
+      {
+        "actual_zip": "02109",
+        "test_rows": 50,
+        "raw_accuracy": 0.88,
+        "acceptance_rate": 0.8
+      },
+      {
+        "actual_zip": "02110",
+        "test_rows": 31,
+        "raw_accuracy": 0.8709677419354839,
+        "acceptance_rate": 0.8709677419354839
+      },
+      {
+        "actual_zip": "02111",
+        "test_rows": 64,
+        "raw_accuracy": 0.953125,
+        "acceptance_rate": 0.921875
+      },
+      {
+        "actual_zip": "02113",
+        "test_rows": 81,
+        "raw_accuracy": 0.9876543209876543,
+        "acceptance_rate": 0.9876543209876543
+      },
+      {
+        "actual_zip": "02114",
+        "test_rows": 118,
+        "raw_accuracy": 1.0,
+        "acceptance_rate": 0.9830508474576272
+      },
+      {
+        "actual_zip": "02115",
+        "test_rows": 113,
+        "raw_accuracy": 0.9557522123893806,
+        "acceptance_rate": 0.8938053097345132
+      },
+      {
+        "actual_zip": "02116",
+        "test_rows": 226,
+        "raw_accuracy": 0.995575221238938,
+        "acceptance_rate": 0.9867256637168141
+      },
+      {
+        "actual_zip": "02118",
+        "test_rows": 291,
+        "raw_accuracy": 0.993127147766323,
+        "acceptance_rate": 0.9725085910652921
+      },
+      {
+        "actual_zip": "02119",
+        "test_rows": 236,
+        "raw_accuracy": 0.9745762711864406,
+        "acceptance_rate": 0.961864406779661
+      },
+      {
+        "actual_zip": "02120",
+        "test_rows": 102,
+        "raw_accuracy": 0.9803921568627451,
+        "acceptance_rate": 0.9509803921568627
+      },
+      {
+        "actual_zip": "02121",
+        "test_rows": 214,
+        "raw_accuracy": 0.9813084112149533,
+        "acceptance_rate": 0.9626168224299065
+      },
+      {
+        "actual_zip": "02122",
+        "test_rows": 210,
+        "raw_accuracy": 0.9857142857142858,
+        "acceptance_rate": 0.9666666666666667
+      },
+      {
+        "actual_zip": "02124",
+        "test_rows": 396,
+        "raw_accuracy": 0.9823232323232324,
+        "acceptance_rate": 0.9646464646464646
+      },
+      {
+        "actual_zip": "02125",
+        "test_rows": 303,
+        "raw_accuracy": 0.9867986798679867,
+        "acceptance_rate": 0.9702970297029703
+      },
+      {
+        "actual_zip": "02126",
+        "test_rows": 142,
+        "raw_accuracy": 0.9929577464788732,
+        "acceptance_rate": 0.9577464788732394
+      },
+      {
+        "actual_zip": "02127",
+        "test_rows": 554,
+        "raw_accuracy": 0.9981949458483754,
+        "acceptance_rate": 0.9981949458483754
+      },
+      {
+        "actual_zip": "02128",
+        "test_rows": 356,
+        "raw_accuracy": 1.0,
+        "acceptance_rate": 1.0
+      },
+      {
+        "actual_zip": "02129",
+        "test_rows": 197,
+        "raw_accuracy": 1.0,
+        "acceptance_rate": 1.0
+      },
+      {
+        "actual_zip": "02130",
+        "test_rows": 323,
+        "raw_accuracy": 0.9845201238390093,
+        "acceptance_rate": 0.9721362229102167
+      },
+      {
+        "actual_zip": "02131",
+        "test_rows": 215,
+        "raw_accuracy": 0.9953488372093023,
+        "acceptance_rate": 0.986046511627907
+      },
+      {
+        "actual_zip": "02132",
+        "test_rows": 120,
+        "raw_accuracy": 0.9666666666666667,
+        "acceptance_rate": 0.9666666666666667
+      },
+      {
+        "actual_zip": "02133",
+        "test_rows": 1,
+        "raw_accuracy": 0.0,
+        "acceptance_rate": 0.0
+      },
+      {
+        "actual_zip": "02134",
+        "test_rows": 191,
+        "raw_accuracy": 0.9633507853403142,
+        "acceptance_rate": 0.9476439790575916
+      },
+      {
+        "actual_zip": "02135",
+        "test_rows": 322,
+        "raw_accuracy": 0.9906832298136646,
+        "acceptance_rate": 0.9751552795031055
+      },
+      {
+        "actual_zip": "02136",
+        "test_rows": 150,
+        "raw_accuracy": 0.98,
+        "acceptance_rate": 0.9733333333333334
+      },
+      {
+        "actual_zip": "02163",
+        "test_rows": 3,
+        "raw_accuracy": 0.3333333333333333,
+        "acceptance_rate": 0.6666666666666666
+      },
+      {
+        "actual_zip": "02199",
+        "test_rows": 2,
+        "raw_accuracy": 0.0,
+        "acceptance_rate": 0.5
+      },
+      {
+        "actual_zip": "02201",
+        "test_rows": 1,
+        "raw_accuracy": 0.0,
+        "acceptance_rate": 0.0
+      },
+      {
+        "actual_zip": "02210",
+        "test_rows": 73,
+        "raw_accuracy": 0.9726027397260274,
+        "acceptance_rate": 1.0
+      },
+      {
+        "actual_zip": "02215",
+        "test_rows": 115,
+        "raw_accuracy": 0.991304347826087,
+        "acceptance_rate": 0.9652173913043478
+      },
+      {
+        "actual_zip": "02467",
+        "test_rows": 7,
+        "raw_accuracy": 0.42857142857142855,
+        "acceptance_rate": 1.0
+      }
+    ]
+  },
+  "rows": {
+    "total": 78526,
+    "reported_zip": 59156,
+    "knn_resolved": 17349,
+    "unresolved": 2021,
+    "missing_zip_with_valid_coordinates": 19184,
+    "missing_zip_without_valid_coordinates": 186,
+    "final_zip_coverage": 0.974263301326949
+  },
+  "output": "data\\derived\\311-service-requests-with-resolved-zip.csv.gz"
+}

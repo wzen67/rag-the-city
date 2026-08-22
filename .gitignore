@@ -1,9 +1,17 @@
 .venv/
 __pycache__/
 *.py[cod]
-.chroma/
 .pytest_cache/
+
+# vector stores and local db artifacts
+.chroma/
+data/chroma/
+boston.db
+
+# never commit decompressed source data (the .gz files are the checked-in
+# copies); data/reference/ is deliberately not covered by these rules
 data/*.csv
 data/*.json
 !data/*.gz
+
 .DS_Store
