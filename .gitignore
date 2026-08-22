@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.py[cod]
+.chroma/
+.pytest_cache/
+data/*.csv
+data/*.json
+!data/*.gz
+.DS_Store

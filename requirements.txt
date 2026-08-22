@@ -1,0 +1,7 @@
+duckdb
+chromadb
+rank_bm25
+requests
+pandas
+pytz
+pytest
