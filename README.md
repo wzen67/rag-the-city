@@ -148,6 +148,13 @@ while the model call is still in flight.
   Instant routing trace, hero figure or sorted bar comparison, the SQL, the citations.
 - **MCP server** (`mcp_server.py`) — the data catalog (tables, schemas, joins, samples)
   plus `ask` (the whole pipeline), `query` (the locked SQL path), and `semantic_rules`.
+  It streams derived tables from Oracle Object Storage rather than from disk, so
+  `list_tables()` and `describe_table()` read row counts and headers from
+  `catalog_meta.json` instead of pulling a 100 MB+ CSV just to count it. Every build
+  script writes that sidecar into `data/derived/` via
+  `rag.catalog_meta.update_catalog_meta()`, merging so no script clobbers another's
+  entries. **Re-upload `data/derived/catalog_meta.json` to the bucket alongside the
+  CSVs whenever a build script is re-run**, or the catalog will report stale counts.
 
 ### Models — all local, no cloud
 | Job | Model | Size |
@@ -188,7 +195,21 @@ low as 47.7% for D4/South End.
 
 `eval/` holds the gold question set (20 questions across both personas), a naive
 baseline, and the harness. Results are committed to
-[`eval-results/eval.md`](eval-results/eval.md).
+[`eval-results/eval.md`](eval-results/eval.md) — the Track A anchor asks for numbers,
+and an eval script with no committed output does not count.
+
+| Artifact | Path |
+| --- | --- |
+| Gold questions (2 personas, 20 items) | [`eval/questions.json`](eval/questions.json) |
+| Recompute gold from the CSVs | [`eval/fill_gold.py`](eval/fill_gold.py) |
+| Naive baseline (CSV head only — no SQL, no schema) | [`eval/naive_baseline.py`](eval/naive_baseline.py) |
+| Harness | [`eval/run_eval.py`](eval/run_eval.py) |
+| Committed numbers | [`eval-results/eval.md`](eval-results/eval.md) |
+
+The set includes counting items, four abstentions, a value judgement ("is it safe?"),
+the offense-code trap (a naive `count(*)` reports 10,540 crimes in 2024; excluding
+non-crime descriptions gives 7,957), and a `UCR_PART` schema-grounding trap where the
+column is empty.
 
 ```bash
 PYTHONPATH=. .venv/bin/python eval/run_eval.py                        # both arms
