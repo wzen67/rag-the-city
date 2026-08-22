@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "rag-the-city": {
+      "url": "http://127.0.0.1:3000/mcp"
+    }
+  }
+}

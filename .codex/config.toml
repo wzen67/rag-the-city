@@ -1,0 +1,2 @@
+[mcp_servers.rag_the_city]
+url = "http://127.0.0.1:3000/mcp"
